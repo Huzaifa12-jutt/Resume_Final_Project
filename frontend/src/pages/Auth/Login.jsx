@@ -13,7 +13,6 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [showPassword, setShowPassword] = useState(false);
-  const [role, setRole] = useState('recruiter');
 
   const {
     register,
@@ -29,6 +28,7 @@ const Login = () => {
       console.log('🔵 Calling login function...');
       const user = await login(data.email, data.password);
       console.log('🔵 Login successful:', user);
+      console.log('🔵 User role from backend:', user.role);
       const redirectPath = location.state?.from?.pathname || (user.role === 'recruiter' ? '/recruiter' : '/candidate');
       console.log('🔵 Redirecting to:', redirectPath);
       navigate(redirectPath, { replace: true });
@@ -40,28 +40,6 @@ const Login = () => {
 
   return (
     <AuthLayout title="Welcome Back" subtitle="Sign in to your TalentLense account to continue.">
-      {/* Role Toggle Selector */}
-      <div className="mb-6 bg-gradient-to-r from-teal-50 to-indigo-50 p-1 rounded-xl flex">
-        <button
-          type="button"
-          onClick={() => setRole('recruiter')}
-          className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${
-            role === 'recruiter' ? 'bg-white text-teal-600 shadow-md' : 'text-slate-500 hover:text-slate-900'
-          }`}
-        >
-          Recruiter / HR
-        </button>
-        <button
-          type="button"
-          onClick={() => setRole('candidate')}
-          className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${
-            role === 'candidate' ? 'bg-white text-indigo-600 shadow-md' : 'text-slate-500 hover:text-slate-900'
-          }`}
-        >
-          Candidate / Job Seeker
-        </button>
-      </div>
-
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
         <div>
           <label className="block text-sm font-medium text-slate-900 mb-1.5">Email</label>
@@ -114,7 +92,7 @@ const Login = () => {
         </label>
 
         <Button type="submit" size="lg" className="w-full mt-1 bg-gradient-to-r from-teal-600 to-indigo-600 shadow-lg shadow-teal-600/30 hover:shadow-xl hover:shadow-teal-600/40" isLoading={isSubmitting}>
-          Sign In as {role === 'recruiter' ? 'Recruiter' : 'Candidate'} <ArrowRight size={16} className="ml-1.5" />
+          Sign In <ArrowRight size={16} className="ml-1.5" />
         </Button>
       </form>
 
