@@ -105,16 +105,22 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = async (email, password) => {
+    console.log('🔵 AuthContext login called with:', email);
     setIsLoading(true);
     try {
+      console.log('🔵 Calling authService.login...');
       const response = await authService.login({ email, password });
+      console.log('🔵 authService.login response:', response);
       localStorage.setItem(STORAGE_KEY_TOKEN, response.access_token);
       setToken(response.access_token);
+      console.log('🔵 Token set, calling authService.me...');
       const profile = await authService.me();
+      console.log('🔵 authService.me response:', profile);
       setUser(profile);
       toast.success(`Welcome back, ${profile.full_name || email}!`);
       return profile;
     } catch (error) {
+      console.error('🔴 AuthContext login error:', error);
       toast.error(error.message || 'Unable to sign in.');
       throw error;
     } finally {

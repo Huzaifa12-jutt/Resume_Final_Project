@@ -1,6 +1,6 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { BriefcaseBusiness, Building2, LayoutDashboard, LogOut, MessageSquareText, Search, Settings, Sparkles, Users } from 'lucide-react';
+import { BriefcaseBusiness, Building2, LayoutDashboard, LogOut, MessageSquareText, Search, Settings, Sparkles, Users, Mic } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 
 export default function RoleShell({ title, subtitle, children, role }) {
@@ -21,6 +21,7 @@ export default function RoleShell({ title, subtitle, children, role }) {
       { to: '/candidate/jobs', label: 'Browse Jobs', icon: BriefcaseBusiness },
       { to: '/candidate/saved', label: 'Saved Jobs', icon: Sparkles },
       { to: '/candidate/applications', label: 'Applications', icon: MessageSquareText },
+      { to: '/candidate/interview', label: 'Interview', icon: Mic },
       { to: '/candidate/profile', label: 'Profile', icon: Users },
       { to: '/candidate/settings', label: 'Settings', icon: Settings },
     ];

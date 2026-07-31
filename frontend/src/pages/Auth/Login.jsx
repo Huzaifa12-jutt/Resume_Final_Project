@@ -22,11 +22,18 @@ const Login = () => {
   } = useForm();
 
   const onSubmit = async (data) => {
+    console.log('🔵 Login button clicked');
+    console.log('🔵 Email:', data.email);
+    console.log('🔵 Password:', data.password ? '***' : 'empty');
     try {
+      console.log('🔵 Calling login function...');
       const user = await login(data.email, data.password);
+      console.log('🔵 Login successful:', user);
       const redirectPath = location.state?.from?.pathname || (user.role === 'recruiter' ? '/recruiter' : '/candidate');
+      console.log('🔵 Redirecting to:', redirectPath);
       navigate(redirectPath, { replace: true });
     } catch (error) {
+      console.error('🔴 Login error:', error);
       // Error handled by AuthContext
     }
   };

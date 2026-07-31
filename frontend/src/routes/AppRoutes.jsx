@@ -1,3 +1,4 @@
+import React from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import Login from '../pages/Auth/Login';
 import Register from '../pages/Auth/Register';
@@ -37,6 +38,7 @@ export default function AppRoutes() {
       <Route path="/reset-password" element={<PublicOnlyRoute><ResetPassword /></PublicOnlyRoute>} />
       <Route path="/unauthorized" element={<Unauthorized />} />
 
+      {/* Recruiter routes - only recruiters can access */}
       <Route path="/recruiter" element={<ProtectedRoute><RoleRoute allowedRoles={['recruiter']}><RecruiterOverviewPage /></RoleRoute></ProtectedRoute>} />
       <Route path="/recruiter/jobs" element={<ProtectedRoute><RoleRoute allowedRoles={['recruiter']}><RecruiterJobsPage /></RoleRoute></ProtectedRoute>} />
       <Route path="/recruiter/jobs/:jobId" element={<ProtectedRoute><RoleRoute allowedRoles={['recruiter']}><RecruiterJobDashboardPage /></RoleRoute></ProtectedRoute>} />
@@ -45,6 +47,7 @@ export default function AppRoutes() {
       <Route path="/recruiter/company" element={<ProtectedRoute><RoleRoute allowedRoles={['recruiter']}><RecruiterCompanyPage /></RoleRoute></ProtectedRoute>} />
       <Route path="/recruiter/settings" element={<ProtectedRoute><RoleRoute allowedRoles={['recruiter']}><RecruiterSettingsPage /></RoleRoute></ProtectedRoute>} />
 
+      {/* Candidate routes - only candidates can access */}
       <Route path="/candidate" element={<ProtectedRoute><RoleRoute allowedRoles={['candidate']}><CandidateOverviewPage /></RoleRoute></ProtectedRoute>} />
       <Route path="/candidate/jobs" element={<ProtectedRoute><RoleRoute allowedRoles={['candidate']}><CandidateBrowseJobsPage /></RoleRoute></ProtectedRoute>} />
       <Route path="/candidate/saved" element={<ProtectedRoute><RoleRoute allowedRoles={['candidate']}><CandidateSavedJobsPage /></RoleRoute></ProtectedRoute>} />

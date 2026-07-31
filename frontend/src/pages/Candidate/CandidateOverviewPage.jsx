@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, BriefcaseBusiness, Sparkles, UserRound } from 'lucide-react';
+import { ArrowRight, BriefcaseBusiness, Sparkles, UserRound, Plus } from 'lucide-react';
 import RoleShell from '../../components/layout/RoleShell';
 import { atsService } from '../../services/atsService';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
+import Button from '../../components/common/Button';
 
 export default function CandidateOverviewPage() {
   useDocumentTitle('Candidate Dashboard');
@@ -66,7 +67,7 @@ export default function CandidateOverviewPage() {
             <div className="rounded-2xl border border-dashed border-indigo-200 bg-indigo-50/40 p-6 text-sm text-indigo-700">No applications yet. Browse jobs and apply when you are ready.</div>
           ) : applications.map((application) => (
             <div key={application.id} className="rounded-2xl border border-slate-200 p-4 bg-slate-50">
-              <p className="font-semibold text-slate-950">{application.id}</p>
+              <p className="font-semibold text-slate-950">{application.job_title || 'Unknown Position'}</p>
               <p className="mt-1 text-sm text-slate-500">Status: {application.status || 'Applied'}</p>
             </div>
           ))}
