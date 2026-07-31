@@ -22,6 +22,9 @@ import CandidateSavedJobsPage from '../pages/Candidate/CandidateSavedJobsPage';
 import CandidateApplicationsPage from '../pages/Candidate/CandidateApplicationsPage';
 import CandidateProfilePage from '../pages/Candidate/CandidateProfilePage';
 import CandidateSettingsPage from '../pages/Candidate/CandidateSettingsPage';
+import CandidateInterviewPage from '../pages/Candidate/CandidateInterviewPage';
+import CandidateInterviewSessionPage from '../pages/Candidate/CandidateInterviewSessionPage';
+import CandidateInterviewResultsPage from '../pages/Candidate/CandidateInterviewResultsPage';
 
 export default function AppRoutes() {
   return (
@@ -46,6 +49,9 @@ export default function AppRoutes() {
       <Route path="/candidate/jobs" element={<ProtectedRoute><RoleRoute allowedRoles={['candidate']}><CandidateBrowseJobsPage /></RoleRoute></ProtectedRoute>} />
       <Route path="/candidate/saved" element={<ProtectedRoute><RoleRoute allowedRoles={['candidate']}><CandidateSavedJobsPage /></RoleRoute></ProtectedRoute>} />
       <Route path="/candidate/applications" element={<ProtectedRoute><RoleRoute allowedRoles={['candidate']}><CandidateApplicationsPage /></RoleRoute></ProtectedRoute>} />
+      <Route path="/candidate/interview" element={<ProtectedRoute><RoleRoute allowedRoles={['candidate']}><CandidateInterviewPage /></RoleRoute></ProtectedRoute>} />
+      <Route path="/candidate/interview/session/:interviewId" element={<ProtectedRoute><RoleRoute allowedRoles={['candidate']}><CandidateInterviewSessionPage /></RoleRoute></ProtectedRoute>} />
+      <Route path="/candidate/interview/results/:interviewId" element={<ProtectedRoute><RoleRoute allowedRoles={['candidate']}><CandidateInterviewResultsPage /></RoleRoute></ProtectedRoute>} />
       <Route path="/candidate/profile" element={<ProtectedRoute><RoleRoute allowedRoles={['candidate']}><CandidateProfilePage /></RoleRoute></ProtectedRoute>} />
       <Route path="/candidate/settings" element={<ProtectedRoute><RoleRoute allowedRoles={['candidate']}><CandidateSettingsPage /></RoleRoute></ProtectedRoute>} />
 
