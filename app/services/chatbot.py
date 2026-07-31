@@ -30,8 +30,15 @@ def _build_context(ranked_candidates: list, job_description: str) -> str:
     for c in ranked_candidates:
         lines.append(
             f"\n#{c['rank']} {c['name']} - Overall Score: {c['overall_score']}%\n"
+            f"  Email: {c.get('email', 'N/A')}\n"
+            f"  Phone: {c.get('phone', 'N/A')}\n"
+            f"  All Skills: {', '.join(c.get('skills', [])) or 'None'}\n"
             f"  Skills matched: {', '.join(c['matched_skills']) or 'None'}\n"
             f"  Missing skills: {', '.join(c['missing_skills']) or 'None'}\n"
+            f"  Education: {c.get('education', 'N/A')}\n"
+            f"  Experience: {c.get('experience', 'N/A')}\n"
+            f"  Certifications: {c.get('certifications', 'N/A')}\n"
+            f"  Projects: {c.get('projects', 'N/A')}\n"
             f"  Breakdown -> Skills: {c['breakdown']['skills']}%, "
             f"Experience: {c['breakdown']['experience']}%, "
             f"Education: {c['breakdown']['education']}%, "
@@ -44,7 +51,9 @@ def _build_context(ranked_candidates: list, job_description: str) -> str:
         "\nAnswer the recruiter's questions using only the information "
         "above. Be concise, specific, and reference candidate names and "
         "numbers directly. If asked to recommend a candidate, justify it "
-        "using the score breakdown."
+        "using the score breakdown. Provide detailed information about "
+        "candidates' education, skills, experience, certifications, and "
+        "projects when asked."
     )
     return "\n".join(lines)
 

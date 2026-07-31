@@ -39,6 +39,8 @@ def _load_ranked_candidates_for_chat(job_id: str) -> list:
         ranked.append({
             "rank": s.get("rank", 0),
             "name": c.get("name"),
+            "email": c.get("email"),
+            "phone": c.get("phone"),
             "overall_score": s.get("overall_score", 0),
             "matched_skills": s.get("matched_skills") or [],
             "missing_skills": s.get("missing_skills") or [],
@@ -51,6 +53,11 @@ def _load_ranked_candidates_for_chat(job_id: str) -> list:
             },
             "strengths": s.get("strengths") or [],
             "weaknesses": s.get("weaknesses") or [],
+            "skills": c.get("skills") or [],
+            "education": c.get("education") or "",
+            "experience": c.get("experience") or "",
+            "certifications": c.get("certifications") or "",
+            "projects": c.get("projects") or "",
         })
     ranked.sort(key=lambda r: (r["rank"] == 0, r["rank"]))
     return ranked
