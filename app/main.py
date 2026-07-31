@@ -18,7 +18,7 @@ from fastapi.responses import JSONResponse
 
 from app.core.config import get_settings
 from app.db.models import HealthResponse
-from app.routers import candidates, rankings, chat, auth, notifications, ats, gmail
+from app.routers import candidates, rankings, chat, auth, notifications, ats, gmail, interview
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -51,6 +51,7 @@ app.include_router(auth.router)
 app.include_router(notifications.router)
 app.include_router(ats.router)
 app.include_router(gmail.router)
+app.include_router(interview.router)
 
 app.include_router(candidates.router)
 app.include_router(rankings.router)

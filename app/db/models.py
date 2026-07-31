@@ -183,3 +183,76 @@ class HealthResponse(BaseModel):
     status: str
     environment: str
     issues: list[str] = []
+
+
+# ---------------------------------------------------------------------------
+# Interview Simulator
+# ---------------------------------------------------------------------------
+class InterviewGenerateRequest(BaseModel):
+    resume_text: str = Field(..., min_length=1)
+    job_id: Optional[str] = None
+
+
+class InterviewQuestion(BaseModel):
+    id: str
+    question: str
+    category: str
+    difficulty: str
+
+
+class InterviewGenerateResponse(BaseModel):
+    interview_id: str
+    questions: list[InterviewQuestion]
+
+
+class InterviewAnswerRequest(BaseModel):
+    interview_id: str
+    question_id: str
+    answer: str = Field(..., min_length=1)
+
+
+class InterviewAnswerResponse(BaseModel):
+    success: bool
+    next_question: Optional[InterviewQuestion] = None
+
+
+class InterviewDetailResult(BaseModel):
+    question: str
+    answer: str
+    score: int
+    feedback: str
+
+
+class InterviewEvaluateResponse(BaseModel):
+    score: int
+    total_questions: int
+    correct: int
+    incorrect: int
+    strengths: list[str]
+    weaknesses: list[str]
+    feedback: str
+    rating: str
+    detailed_results: list[InterviewDetailResult]
+
+
+class InterviewHistoryItem(BaseModel):
+    interview_id: str
+    date: datetime
+    score: Optional[int]
+    status: str
+
+
+class InterviewDetailResponse(BaseModel):
+    interview_id: str
+    candidate_id: str
+    job_id: Optional[str]
+    status: str
+    score: Optional[int]
+    rating: Optional[str]
+    feedback: Optional[str]
+    strengths: list[str]
+    weaknesses: list[str]
+    created_at: datetime
+    completed_at: Optional[datetime]
+    questions: list[InterviewQuestion]
+    answers: list[InterviewDetailResult]
