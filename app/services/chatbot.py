@@ -23,37 +23,42 @@ MODEL_NAME = "llama-3.1-8b-instant"
 def _build_context(ranked_candidates: list, job_description: str) -> str:
     lines = [
         "You are an HR assistant helping a recruiter evaluate candidates "
-        "for the following role:",
+        "for the following role. Provide professional, well-structured responses "
+        "with clear formatting using bullet points, numbered lists, and sections.",
         f"JOB DESCRIPTION:\n{job_description}\n",
         "CANDIDATE RANKINGS (highest score first):",
     ]
     for c in ranked_candidates:
         lines.append(
-            f"\n#{c['rank']} {c['name']} - Overall Score: {c['overall_score']}%\n"
-            f"  Email: {c.get('email', 'N/A')}\n"
-            f"  Phone: {c.get('phone', 'N/A')}\n"
-            f"  All Skills: {', '.join(c.get('skills', [])) or 'None'}\n"
-            f"  Skills matched: {', '.join(c['matched_skills']) or 'None'}\n"
-            f"  Missing skills: {', '.join(c['missing_skills']) or 'None'}\n"
-            f"  Education: {c.get('education', 'N/A')}\n"
-            f"  Experience: {c.get('experience', 'N/A')}\n"
-            f"  Certifications: {c.get('certifications', 'N/A')}\n"
-            f"  Projects: {c.get('projects', 'N/A')}\n"
-            f"  Breakdown -> Skills: {c['breakdown']['skills']}%, "
+            f"\n**#{c['rank']} {c['name']}** - Overall Score: {c['overall_score']}%\n"
+            f"  **Email:** {c.get('email', 'N/A')}\n"
+            f"  **Phone:** {c.get('phone', 'N/A')}\n"
+            f"  **Skills:** {', '.join(c.get('skills', [])) or 'None'}\n"
+            f"  **Matched Skills:** {', '.join(c['matched_skills']) or 'None'}\n"
+            f"  **Missing Skills:** {', '.join(c['missing_skills']) or 'None'}\n"
+            f"  **Education:** {c.get('education', 'N/A')}\n"
+            f"  **Experience:** {c.get('experience', 'N/A')}\n"
+            f"  **Certifications:** {c.get('certifications', 'N/A')}\n"
+            f"  **Projects:** {c.get('projects', 'N/A')}\n"
+            f"  **Score Breakdown:** Skills: {c['breakdown']['skills']}%, "
             f"Experience: {c['breakdown']['experience']}%, "
             f"Education: {c['breakdown']['education']}%, "
             f"Certifications: {c['breakdown']['certifications']}%, "
             f"Projects: {c['breakdown']['projects']}%\n"
-            f"  Strengths: {', '.join(c['strengths'])}\n"
-            f"  Weaknesses: {', '.join(c['weaknesses'])}"
+            f"  **Strengths:** {', '.join(c['strengths'])}\n"
+            f"  **Weaknesses:** {', '.join(c['weaknesses'])}"
         )
     lines.append(
-        "\nAnswer the recruiter's questions using only the information "
-        "above. Be concise, specific, and reference candidate names and "
-        "numbers directly. If asked to recommend a candidate, justify it "
-        "using the score breakdown. Provide detailed information about "
-        "candidates' education, skills, experience, certifications, and "
-        "projects when asked."
+        "\n**Response Guidelines:**\n"
+        "- Use markdown formatting with **bold**, *italic*, and headers\n"
+        "- Organize information with bullet points and numbered lists\n"
+        "- Create clear sections for different topics\n"
+        "- Be specific and reference candidate names and scores\n"
+        "- Provide detailed, professional analysis when asked\n"
+        "- Use emojis sparingly to enhance readability (✓, ✗, 📊, etc.)\n"
+        "- Structure comparisons in table-like format when appropriate\n"
+        "- Give actionable insights and recommendations\n"
+        "- Keep responses concise but comprehensive"
     )
     return "\n".join(lines)
 
