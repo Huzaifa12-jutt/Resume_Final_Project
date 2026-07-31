@@ -41,12 +41,12 @@ const Login = () => {
   return (
     <AuthLayout title="Welcome Back" subtitle="Sign in to your TalentLense account to continue.">
       {/* Role Toggle Selector */}
-      <div className="mb-6 bg-slate-100 p-1 rounded-xl flex">
+      <div className="mb-6 bg-gradient-to-r from-teal-50 to-indigo-50 p-1 rounded-xl flex">
         <button
           type="button"
           onClick={() => setRole('recruiter')}
           className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${
-            role === 'recruiter' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-900'
+            role === 'recruiter' ? 'bg-white text-teal-600 shadow-md' : 'text-slate-500 hover:text-slate-900'
           }`}
         >
           Recruiter / HR
@@ -55,7 +55,7 @@ const Login = () => {
           type="button"
           onClick={() => setRole('candidate')}
           className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${
-            role === 'candidate' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-900'
+            role === 'candidate' ? 'bg-white text-indigo-600 shadow-md' : 'text-slate-500 hover:text-slate-900'
           }`}
         >
           Candidate / Job Seeker
@@ -71,7 +71,7 @@ const Login = () => {
               type="email"
               placeholder="you@company.com"
               {...register('email', { required: 'Email address is required' })}
-              className="w-full rounded-xl border border-slate-200 pl-10 pr-4 py-3 text-sm text-slate-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/15"
+              className="w-full rounded-xl border border-slate-200 pl-10 pr-4 py-3 text-sm text-slate-900 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/15 transition-all"
             />
           </div>
           {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email.message}</p>}
@@ -80,7 +80,7 @@ const Login = () => {
         <div>
           <div className="flex items-center justify-between mb-1.5">
             <label className="block text-sm font-medium text-slate-900">Password</label>
-            <Link to="/forgot-password" className="text-sm font-medium text-indigo-600 hover:underline">
+            <Link to="/forgot-password" className="text-sm font-medium text-teal-600 hover:underline">
               Forgot Password?
             </Link>
           </div>
@@ -90,7 +90,7 @@ const Login = () => {
               type={showPassword ? 'text' : 'password'}
               placeholder="••••••••"
               {...register('password', { required: 'Password is required' })}
-              className="w-full rounded-xl border border-slate-200 pl-10 pr-10 py-3 text-sm text-slate-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/15"
+              className="w-full rounded-xl border border-slate-200 pl-10 pr-10 py-3 text-sm text-slate-900 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/15 transition-all"
             />
             <button
               type="button"
@@ -113,14 +113,14 @@ const Login = () => {
           Remember me
         </label>
 
-        <Button type="submit" size="lg" className="w-full mt-1 shadow-md shadow-indigo-600/20" isLoading={isSubmitting}>
+        <Button type="submit" size="lg" className="w-full mt-1 bg-gradient-to-r from-teal-600 to-indigo-600 shadow-lg shadow-teal-600/30 hover:shadow-xl hover:shadow-teal-600/40" isLoading={isSubmitting}>
           Sign In as {role === 'recruiter' ? 'Recruiter' : 'Candidate'} <ArrowRight size={16} className="ml-1.5" />
         </Button>
       </form>
 
       <div className="mt-8 text-center text-sm text-slate-500">
         Don't have an account?{' '}
-        <Link to="/register" className="text-indigo-600 font-semibold hover:underline">
+        <Link to="/register" className="text-teal-600 font-semibold hover:underline">
           Create Account
         </Link>
       </div>

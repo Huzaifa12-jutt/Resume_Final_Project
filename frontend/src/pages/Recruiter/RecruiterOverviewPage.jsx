@@ -30,15 +30,15 @@ const APPS_DATA = [
 ];
 
 const FUNNEL = [
-  { label: 'Applied',     value: 2480, pct: 100, color: '#2b7fff' },
-  { label: 'Screened',    value: 1240, pct: 50,  color: '#3b82f6' },
-  { label: 'Shortlisted', value: 342,  pct: 14,  color: '#60a5fa' },
-  { label: 'Interviewed', value: 128,  pct: 5,   color: '#93c5fd' },
-  { label: 'Hired',       value: 24,   pct: 1,   color: '#bfdbfe' },
+  { label: 'Applied',     value: 2480, pct: 100, color: '#14b8a6' },
+  { label: 'Screened',    value: 1240, pct: 50,  color: '#0d9488' },
+  { label: 'Shortlisted', value: 342,  pct: 14,  color: '#4f46e5' },
+  { label: 'Interviewed', value: 128,  pct: 5,   color: '#a855f7' },
+  { label: 'Hired',       value: 24,   pct: 1,   color: '#10b981' },
 ];
 
 const RECENT_NOTIFS = [
-  { text: 'Analytics dashboard initialized', time: 'Just now', icon: Sparkles, color: '#2b7fff' }
+  { text: 'Analytics dashboard initialized', time: 'Just now', icon: Sparkles, color: '#14b8a6' }
 ];
 
 function AreaChart({ data, height = 160 }) {
@@ -55,14 +55,14 @@ function AreaChart({ data, height = 160 }) {
     <svg viewBox={`0 0 ${W} ${H}`} className="w-full" preserveAspectRatio="none">
       <defs>
         <linearGradient id="dashboardArea" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#2b7fff" stopOpacity="0.24" />
-          <stop offset="100%" stopColor="#2b7fff" stopOpacity="0.04" />
+          <stop offset="0%" stopColor="#14b8a6" stopOpacity="0.24" />
+          <stop offset="100%" stopColor="#14b8a6" stopOpacity="0.04" />
         </linearGradient>
       </defs>
       <path d={areaPath} fill="url(#dashboardArea)" />
-      <path d={linePath} fill="none" stroke="#2563eb" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+      <path d={linePath} fill="none" stroke="#0d9488" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
       {xs.map((x, index) => (
-        <circle key={index} cx={x} cy={ys[index]} r="4" fill="#fff" stroke="#2563eb" strokeWidth="2" />
+        <circle key={index} cx={x} cy={ys[index]} r="4" fill="#fff" stroke="#0d9488" strokeWidth="2" />
       ))}
     </svg>
   );

@@ -1,10 +1,10 @@
 @import "tailwindcss";
 
 /* =============================================================================
-   TalentLense Design System v2.0
+   TalentLense Design System v3.0 - Eye Catching & Colorful
    =============================================================================
-   A premium, consistent design language across the entire application.
-   Brand: TalentLense — Indigo/Blue gradient accent
+   A premium, vibrant design language across the entire application.
+   Brand: TalentLense — Teal/Navy primary with Electric Emerald accent
    Type: Inter for UI, JetBrains Mono for data/monospaced
    ============================================================================= */
 
@@ -12,28 +12,56 @@
    Design Tokens
    --------------------------------------------------------------------------- */
 @theme {
-  /* Surface & Text */
-  --color-ink: #0b1220;
-  --color-ink-soft: #1e293b;
-  --color-paper: #f7f9fc;
-  --color-mist: #e6eaf2;
-  --color-mist-dark: #cbd5e1;
+  /* Surface & Text - Clean neutrals */
+  --color-ink: #0f172a;
+  --color-ink-soft: #334155;
+  --color-paper: #f8fafc;
+  --color-mist: #e2e8f0;
+  --color-mist-dark: #94a3b8;
 
-  /* Primary — Indigo */
-  --color-indigo-50: #eef0ff;
-  --color-indigo-100: #e0e3ff;
-  --color-indigo-200: #c7c9ff;
-  --color-indigo-500: #4f46e5;
-  --color-indigo-600: #4338ca;
-  --color-indigo-700: #3730a3;
-  --color-indigo-950: #1a1740;
+  /* Primary — Deep Teal/Navy */
+  --color-primary-50: #f0fdfa;
+  --color-primary-100: #ccfbf1;
+  --color-primary-200: #99f6e4;
+  --color-primary-500: #14b8a6;
+  --color-primary-600: #0d9488;
+  --color-primary-700: #0f766e;
+  --color-primary-800: #115e59;
+  --color-primary-900: #134e4a;
+  --color-primary-950: #042f2e;
 
-  /* Blue — Secondary accent */
-  --color-signal-50: #eff6ff;
-  --color-signal-100: #dbeafe;
-  --color-signal-500: #2563eb;
-  --color-signal-600: #1d4ed8;
-  --color-signal-700: #1e40af;
+  /* Navy — Deep brand color */
+  --color-navy-50: #f0f4ff;
+  --color-navy-100: #e0e7ff;
+  --color-navy-200: #c7d2fe;
+  --color-navy-500: #6366f1;
+  --color-navy-600: #4f46e5;
+  --color-navy-700: #4338ca;
+  --color-navy-800: #3730a3;
+  --color-navy-900: #312e81;
+  --color-navy-950: #1e1b4b;
+
+  /* Accent — Electric Emerald */
+  --color-accent-50: #ecfdf5;
+  --color-accent-100: #d1fae5;
+  --color-accent-200: #a7f3d0;
+  --color-accent-500: #10b981;
+  --color-accent-600: #059669;
+  --color-accent-700: #047857;
+  --color-accent-800: #065f46;
+  --color-accent-900: #064e3b;
+  --color-accent-950: #022c22;
+
+  /* Secondary — Vibrant Purple */
+  --color-purple-50: #faf5ff;
+  --color-purple-100: #f3e8ff;
+  --color-purple-200: #e9d5ff;
+  --color-purple-500: #a855f7;
+  --color-purple-600: #9333ea;
+  --color-purple-700: #7c3aed;
+  --color-purple-800: #6b21a8;
+  --color-purple-900: #581c87;
+  --color-purple-950: #3b0764;
 
   /* Status colors */
   --color-verified-50: #ecfdf3;
@@ -180,13 +208,13 @@ body {
   opacity: 0.5;
 }
 .button-primary {
-  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  background: linear-gradient(135deg, var(--color-primary-600), var(--color-navy-600));
   color: white;
-  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.25);
+  box-shadow: 0 2px 8px rgba(20, 184, 166, 0.25);
 }
 .button-primary:hover:not(:disabled) {
-  background: linear-gradient(135deg, #4338ca, #4f46e5);
-  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35);
+  background: linear-gradient(135deg, var(--color-primary-700), var(--color-navy-700));
+  box-shadow: 0 4px 14px rgba(20, 184, 166, 0.35);
 }
 .button-secondary {
   border: 1px solid var(--color-mist);

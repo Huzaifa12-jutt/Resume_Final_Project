@@ -166,10 +166,10 @@ const CandidateInterviewPage = () => {
     <div className="max-w-6xl mx-auto p-6 space-y-8">
       {/* Header */}
       <div className="text-center space-y-4">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white mb-4">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-teal-600 to-indigo-600 text-white mb-4">
           <FiMic className="h-8 w-8" />
         </div>
-        <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+        <h1 className="text-3xl font-bold bg-gradient-to-r from-teal-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
           AI Interview Simulator
         </h1>
         <p className="text-gray-600 max-w-2xl mx-auto">
@@ -178,7 +178,7 @@ const CandidateInterviewPage = () => {
       </div>
 
       {/* Start Interview Card */}
-      <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl p-8 border border-indigo-100">
+      <div className="bg-gradient-to-br from-teal-50 via-indigo-50 to-purple-50 rounded-2xl p-8 border border-teal-100">
         <div className="flex items-center justify-between">
           <div className="space-y-2">
             <h2 className="text-xl font-bold text-gray-900">Start New Interview</h2>
@@ -194,7 +194,7 @@ const CandidateInterviewPage = () => {
                     onClick={() => setQuestionCount(count)}
                     className={`px-4 py-2 rounded-lg font-medium transition ${
                       questionCount === count
-                        ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg'
+                        ? 'bg-gradient-to-r from-teal-600 to-indigo-600 text-white shadow-lg'
                         : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                     }`}
                   >
@@ -205,11 +205,11 @@ const CandidateInterviewPage = () => {
             </div>
             <div className="flex items-center gap-4 text-sm text-gray-600">
               <span className="flex items-center">
-                <FiCheckCircle className="h-4 w-4 mr-1 text-green-500" />
+                <FiCheckCircle className="h-4 w-4 mr-1 text-teal-500" />
                 {questionCount} Questions
               </span>
               <span className="flex items-center">
-                <FiClock className="h-4 w-4 mr-1 text-blue-500" />
+                <FiClock className="h-4 w-4 mr-1 text-indigo-500" />
                 2 min/question
               </span>
               <span className="flex items-center">
@@ -221,7 +221,7 @@ const CandidateInterviewPage = () => {
           <button
             onClick={startInterview}
             disabled={generating || !resumeText}
-            className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl font-semibold shadow-lg shadow-indigo-500/20 hover:shadow-xl hover:shadow-indigo-500/30 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+            className="px-6 py-3 bg-gradient-to-r from-teal-600 to-indigo-600 text-white rounded-xl font-semibold shadow-lg shadow-teal-600/30 hover:shadow-xl hover:shadow-teal-600/40 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
           >
             {generating ? (
               <>

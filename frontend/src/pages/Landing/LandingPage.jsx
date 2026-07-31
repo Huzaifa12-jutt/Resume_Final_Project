@@ -106,7 +106,7 @@ function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2.5">
-          <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-indigo-600 to-blue-600 text-white flex items-center justify-center">
+          <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-teal-600 to-indigo-600 text-white flex items-center justify-center">
             <LensMark size={16} tone="light" />
           </div>
           <span className="text-lg font-bold text-slate-900 tracking-tight">TalentLense</span>
@@ -118,7 +118,7 @@ function Navbar() {
               key={link.name}
               href={link.href}
               onClick={scrollTo(link.href)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${active === link.href ? 'text-indigo-600 bg-indigo-50' : 'text-slate-600 hover:text-slate-900'
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${active === link.href ? 'text-teal-600 bg-teal-50' : 'text-slate-600 hover:text-slate-900'
                 }`}
             >
               {link.name}
@@ -132,7 +132,7 @@ function Navbar() {
           </Link>
           <Link
             to="/register"
-            className="inline-flex items-center gap-1.5 rounded-full bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-md shadow-indigo-600/20 transition hover:bg-indigo-700"
+            className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-teal-600 to-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-teal-600/20 transition hover:shadow-xl hover:shadow-teal-600/30 hover:scale-105"
           >
             Get Started
           </Link>
@@ -177,7 +177,7 @@ export default function LandingPage() {
       <main>
         {/* Hero */}
         <section id="home" className="relative overflow-hidden pt-32 pb-20 lg:pt-40 lg:pb-28">
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,_rgba(37,99,235,0.08),_transparent_45%),radial-gradient(circle_at_85%_0%,_rgba(79,70,229,0.08),_transparent_40%)]" />
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,_rgba(20,184,166,0.15),_transparent_45%),radial-gradient(circle_at_85%_0%,_rgba(79,70,229,0.12),_transparent_40%),radial-gradient(circle_at_50%_80%,_rgba(168,85,247,0.08),_transparent_50%)]" />
 
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-12 gap-12 items-center">
             <motion.div
@@ -186,12 +186,12 @@ export default function LandingPage() {
               transition={{ duration: 0.5 }}
               className="lg:col-span-7 text-center lg:text-left"
             >
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-indigo-100 bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-teal-200 bg-teal-50 px-3 py-1 text-xs font-semibold text-teal-700">
                 <Sparkles size={12} /> Powered by AI Resume Ranking Engine
               </span>
 
               <h1 className="mt-6 text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-[1.05]">
-                Find the Right Talent <span className="text-indigo-600">Faster with AI</span>
+                Find the Right Talent <span className="bg-gradient-to-r from-teal-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">Faster with AI</span>
               </h1>
 
               <p className="mt-6 text-lg text-slate-500 leading-relaxed max-w-xl mx-auto lg:mx-0">
@@ -202,13 +202,13 @@ export default function LandingPage() {
               <div className="mt-8 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
                 <Link
                   to="/register"
-                  className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-8 py-3 text-base font-semibold text-white shadow-md shadow-indigo-600/20 transition hover:bg-indigo-700 w-full sm:w-auto justify-center"
+                  className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-teal-600 to-indigo-600 px-8 py-3 text-base font-semibold text-white shadow-lg shadow-teal-600/30 transition hover:shadow-xl hover:shadow-teal-600/40 hover:scale-105 w-full sm:w-auto justify-center"
                 >
                   Get Started <ArrowRight size={18} />
                 </Link>
                 <a
                   href="#how-it-works"
-                  className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-8 py-3 text-base font-semibold text-slate-700 transition hover:bg-slate-50 w-full sm:w-auto justify-center"
+                  className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-200 bg-white px-8 py-3 text-base font-semibold text-slate-700 transition hover:bg-slate-50 hover:border-teal-300 w-full sm:w-auto justify-center"
                 >
                   <PlayCircle size={18} /> Learn More
                 </a>
@@ -285,10 +285,10 @@ export default function LandingPage() {
         </div>
 
         {/* Features */}
-        <section id="features" className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-50/50 border-y border-slate-100">
+        <section id="features" className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-teal-50/50 via-indigo-50/30 to-purple-50/50 border-y border-slate-100">
           <div className="max-w-7xl mx-auto">
             <div className="text-center max-w-2xl mx-auto mb-14 space-y-3">
-              <p className="text-xs font-bold uppercase tracking-widest text-indigo-600">Features</p>
+              <p className="text-xs font-bold uppercase tracking-widest text-teal-600">Features</p>
               <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">Everything you need to hire smarter</h2>
               <p className="text-slate-500 text-base">
                 A complete AI toolkit that removes the manual work from screening and lets you focus on people.
@@ -296,17 +296,25 @@ export default function LandingPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {features.map((f) => (
-                <div
+              {features.map((f, i) => (
+                <motion.div
                   key={f.title}
-                  className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1, duration: 0.4 }}
+                  className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-teal-200"
                 >
-                  <div className="h-11 w-11 rounded-2xl bg-gradient-to-br from-indigo-50 to-blue-50 text-indigo-600 flex items-center justify-center mb-5">
+                  <div className={`h-11 w-11 rounded-2xl flex items-center justify-center mb-5 ${
+                    i % 3 === 0 ? 'bg-gradient-to-br from-teal-50 to-teal-100 text-teal-600' :
+                    i % 3 === 1 ? 'bg-gradient-to-br from-indigo-50 to-indigo-100 text-indigo-600' :
+                    'bg-gradient-to-br from-purple-50 to-purple-100 text-purple-600'
+                  }`}>
                     <f.icon size={20} />
                   </div>
                   <h3 className="text-base font-bold text-slate-900 mb-2">{f.title}</h3>
                   <p className="text-sm text-slate-500 leading-relaxed">{f.description}</p>
-                </div>
+                </motion.div>
               ))}
             </div>
           </div>
@@ -405,22 +413,23 @@ export default function LandingPage() {
 
         {/* CTA */}
         <section className="py-20 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-5xl mx-auto rounded-[2rem] bg-gradient-to-br from-blue-600 to-indigo-700 text-white p-10 sm:p-16 text-center shadow-2xl shadow-indigo-600/20 relative overflow-hidden">
+          <div className="max-w-5xl mx-auto rounded-[2rem] bg-gradient-to-br from-teal-600 via-indigo-600 to-purple-600 text-white p-10 sm:p-16 text-center shadow-2xl shadow-teal-600/30 relative overflow-hidden">
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,_rgba(255,255,255,0.1),_transparent_50%),radial-gradient(circle_at_70%_80%,_rgba(255,255,255,0.08),_transparent_50%)]" />
             <Aperture className="pointer-events-none absolute -right-10 -top-10 h-56 w-56 text-white/10" />
             <h2 className="relative text-3xl sm:text-4xl font-bold tracking-tight">Ready to Transform Your Hiring Process?</h2>
-            <p className="relative mt-4 text-blue-100 max-w-xl mx-auto">
+            <p className="relative mt-4 text-teal-100 max-w-xl mx-auto">
               Join hiring teams using TalentLense to find the best talent faster than ever before.
             </p>
             <div className="relative mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 to="/register"
-                className="inline-flex items-center gap-2 rounded-xl bg-white px-8 py-3 text-base font-semibold text-slate-900 shadow-md transition hover:bg-slate-100"
+                className="inline-flex items-center gap-2 rounded-xl bg-white px-8 py-3 text-base font-semibold text-slate-900 shadow-lg transition hover:bg-slate-100 hover:scale-105"
               >
                 Start Recruiting <ArrowRight size={18} />
               </Link>
               <a
                 href="#contact"
-                className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-8 py-3 text-base font-semibold text-white transition hover:bg-white/20"
+                className="inline-flex items-center gap-2 rounded-xl border-2 border-white/30 bg-white/10 px-8 py-3 text-base font-semibold text-white transition hover:bg-white/20 hover:scale-105"
               >
                 Contact Sales
               </a>
@@ -443,7 +452,7 @@ export default function LandingPage() {
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-slate-900">Email</p>
-                    <a href="mailto:hello@talentlense.com" className="text-sm hover:text-indigo-600 transition">hello@talentlens.com</a>
+                    <a href="mailto:hitechnologies2014@gmail.com" className="text-sm hover:text-indigo-600 transition">hitechnologies2014@gmail.com</a>
                   </div>
                 </div>
                 <div className="flex items-center gap-3 text-slate-600">
@@ -451,8 +460,17 @@ export default function LandingPage() {
                     <Globe size={18} />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-slate-900">Office</p>
-                    <p className="text-sm">San Francisco, CA</p>
+                    <p className="text-sm font-semibold text-slate-900">Phone</p>
+                    <a href="tel:+923195682932" className="text-sm hover:text-indigo-600 transition">+92 319 5682932</a>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 text-slate-600">
+                  <div className="h-10 w-10 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                    <Globe size={18} />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-slate-900">Address</p>
+                    <p className="text-sm">G-11 Markaz, Islamabad</p>
                   </div>
                 </div>
               </div>
