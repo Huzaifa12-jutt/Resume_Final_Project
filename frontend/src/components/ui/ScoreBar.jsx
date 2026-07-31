@@ -1,0 +1,1 @@
+export default function ScoreBar({ label, score }) { return <div><div className="mb-2 flex justify-between text-sm"><span className="text-slate-600">{label}</span><span className="font-semibold">{Math.round(score)}%</span></div><progress className="score-progress" value={score} max="100" aria-label={`${label}: ${Math.round(score)} percent`} /></div>; }

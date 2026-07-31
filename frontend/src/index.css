@@ -1,0 +1,312 @@
+@import "tailwindcss";
+
+/* =============================================================================
+   TalentLense Design System v2.0
+   =============================================================================
+   A premium, consistent design language across the entire application.
+   Brand: TalentLense — Indigo/Blue gradient accent
+   Type: Inter for UI, JetBrains Mono for data/monospaced
+   ============================================================================= */
+
+/* ---------------------------------------------------------------------------
+   Design Tokens
+   --------------------------------------------------------------------------- */
+@theme {
+  /* Surface & Text */
+  --color-ink: #0b1220;
+  --color-ink-soft: #1e293b;
+  --color-paper: #f7f9fc;
+  --color-mist: #e6eaf2;
+  --color-mist-dark: #cbd5e1;
+
+  /* Primary — Indigo */
+  --color-indigo-50: #eef0ff;
+  --color-indigo-100: #e0e3ff;
+  --color-indigo-200: #c7c9ff;
+  --color-indigo-500: #4f46e5;
+  --color-indigo-600: #4338ca;
+  --color-indigo-700: #3730a3;
+  --color-indigo-950: #1a1740;
+
+  /* Blue — Secondary accent */
+  --color-signal-50: #eff6ff;
+  --color-signal-100: #dbeafe;
+  --color-signal-500: #2563eb;
+  --color-signal-600: #1d4ed8;
+  --color-signal-700: #1e40af;
+
+  /* Status colors */
+  --color-verified-50: #ecfdf3;
+  --color-verified-500: #16a34a;
+  --color-verified-600: #15803d;
+  --color-warning-50: #fffbeb;
+  --color-warning-500: #f59e0b;
+  --color-warning-600: #d97706;
+  --color-danger-50: #fef2f2;
+  --color-danger-500: #ef4444;
+  --color-danger-600: #dc2626;
+
+  /* Fonts */
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+
+/* ---------------------------------------------------------------------------
+   Base
+   --------------------------------------------------------------------------- */
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-sans);
+  background: var(--color-paper);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+::selection {
+  background: var(--color-indigo-500);
+  color: white;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-indigo-500);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ---------------------------------------------------------------------------
+   Typography utilities
+   --------------------------------------------------------------------------- */
+.font-mono-tl {
+  font-family: var(--font-mono);
+  font-feature-settings: "tnum" 1, "zero" 1;
+}
+
+/* ---------------------------------------------------------------------------
+   Surface utilities — glass, grain, glow
+   --------------------------------------------------------------------------- */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.glass-panel-dark {
+  background: rgba(11, 18, 32, 0.55);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.grain-surface {
+  background-image: radial-gradient(rgba(15, 23, 42, 0.06) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+/* ---------------------------------------------------------------------------
+   Premium shadow system
+   --------------------------------------------------------------------------- */
+.shadow-premium-sm { box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04); }
+.shadow-premium { box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06), 0 2px 8px rgba(15, 23, 42, 0.04); }
+.shadow-premium-lg { box-shadow: 0 10px 40px rgba(15, 23, 42, 0.08), 0 4px 16px rgba(15, 23, 42, 0.04); }
+.shadow-premium-xl { box-shadow: 0 20px 60px rgba(15, 23, 42, 0.1), 0 8px 24px rgba(15, 23, 42, 0.06); }
+.shadow-indigo { box-shadow: 0 4px 14px rgba(79, 70, 229, 0.2); }
+.shadow-indigo-lg { box-shadow: 0 8px 24px rgba(79, 70, 229, 0.25); }
+
+/* ---------------------------------------------------------------------------
+   Form field — .tl-input
+   --------------------------------------------------------------------------- */
+.tl-input {
+  width: 100%;
+  border-radius: 0.9rem;
+  border: 1.5px solid var(--color-mist);
+  background: #fff;
+  padding: 0.72rem 0.9rem 0.72rem 2.6rem;
+  font-size: 0.875rem;
+  color: var(--color-ink);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.2s ease, background-color 0.15s ease;
+}
+.tl-input:focus {
+  border-color: var(--color-indigo-500);
+  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12);
+  background: #fff;
+}
+.tl-input::placeholder { color: #94a3b8; }
+.tl-input[aria-invalid="true"] {
+  border-color: var(--color-danger-500);
+}
+.tl-input[aria-invalid="true"]:focus {
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.12);
+}
+
+.tl-label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #475569;
+  margin-bottom: 0.4rem;
+}
+
+/* ---------------------------------------------------------------------------
+   Button base — .button
+   --------------------------------------------------------------------------- */
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 0.75rem;
+  padding: 0.65rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.25rem;
+  transition: all 0.15s ease;
+  cursor: pointer;
+  border: none;
+}
+.button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+.button:active:not(:disabled) {
+  transform: translateY(0);
+}
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+.button-primary {
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  color: white;
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.25);
+}
+.button-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #4338ca, #4f46e5);
+  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35);
+}
+.button-secondary {
+  border: 1px solid var(--color-mist);
+  background: white;
+  color: #334155;
+}
+.button-secondary:hover:not(:disabled) {
+  background: var(--color-paper);
+  border-color: var(--color-mist-dark);
+}
+.button-danger {
+  background: var(--color-danger-500);
+  color: white;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2);
+}
+.button-danger:hover:not(:disabled) {
+  background: var(--color-danger-600);
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.3);
+}
+.button-ghost {
+  background: transparent;
+  color: #64748b;
+}
+.button-ghost:hover:not(:disabled) {
+  background: rgba(15, 23, 42, 0.04);
+  color: var(--color-ink);
+}
+.button-outline {
+  background: transparent;
+  color: var(--color-indigo-600);
+  border: 1.5px solid var(--color-indigo-500);
+}
+.button-outline:hover:not(:disabled) {
+  background: var(--color-indigo-50);
+}
+
+/* ---------------------------------------------------------------------------
+   Eyebrow (section label)
+   --------------------------------------------------------------------------- */
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--color-indigo-600);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* ---------------------------------------------------------------------------
+   Score bar — HTML progress element
+   --------------------------------------------------------------------------- */
+.score-progress {
+  width: 100%;
+  height: 0.45rem;
+  border-radius: 999px;
+  overflow: hidden;
+  background: #e2e8f0;
+}
+.score-progress::-webkit-progress-bar {
+  background: #e2e8f0;
+  border-radius: 999px;
+}
+.score-progress::-webkit-progress-value {
+  background: linear-gradient(90deg, var(--color-indigo-500), var(--color-signal-500));
+  border-radius: 999px;
+  transition: width 0.6s ease;
+}
+.score-progress::-moz-progress-bar {
+  background: linear-gradient(90deg, var(--color-indigo-500), var(--color-signal-500));
+  border-radius: 999px;
+}
+
+/* ---------------------------------------------------------------------------
+   Animations — lens motif
+   --------------------------------------------------------------------------- */
+@keyframes lens-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes lens-spin-reverse {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+@keyframes lens-pulse {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.lens-ring-slow { animation: lens-spin 40s linear infinite; }
+.lens-ring-slow-reverse { animation: lens-spin-reverse 55s linear infinite; }
+.lens-pulse { animation: lens-pulse 3.2s ease-in-out infinite; }
+.shimmer {
+  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+.animate-fade-in-up { animation: fade-in-up 0.3s ease-out; }
+.animate-scale-in { animation: scale-in 0.2s ease-out; }
+
+@media (prefers-reduced-motion: reduce) {
+  .lens-ring-slow, .lens-ring-slow-reverse, .lens-pulse,
+  .shimmer, .animate-fade-in-up, .animate-scale-in {
+    animation: none !important;
+  }
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,37 @@
+# --- Supabase ---
+SUPABASE_URL=https://kmtqcfjocrmnpodbdweq.supabase.co
+SUPABASE_SERVICE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImttdHFjZmpvY3JtbnBvZGJkd2VxIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4NDYxMDk4NywiZXhwIjoyMTAwMTg2OTg3fQ.8RZwpJZTmjDpEIJqbT3cA6PkUNUngbbfLUaymCwRxHs
+SUPABASE_RESUME_BUCKET=resumes
+
+# --- Groq ---
+GROQ_API_KEY=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
+
+# --- CORS ---
+ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173,http://localhost:5174,https://your-frontend-domain.com
+
+# --- App ---
+ENVIRONMENT=development
+MAX_UPLOAD_MB=10
+
+JWT_SECRET=use-a-long-random-production-secret
+JWT_EXPIRES_MINUTES=60
+
+# --- Email (Disabled for testing) ---
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USERNAME=245197@aack.au.edu.pk
+SMTP_PASSWORD=splw pamv ebou qfiu
+EMAIL_FROM=245197@aack.au.edu.pk
+EMAIL_DELIVERY_DISABLED=true
+
+# --- Gmail Integration ---
+GMAIL_CLIENT_ID=368310666488-ualf15nmrfd3pa98s46oo0krosai54j3.apps.googleusercontent.com
+GMAIL_CLIENT_SECRET=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
+GMAIL_REDIRECT_URI=http://localhost:8000
+GMAIL_FETCH_LIMIT=50
+
+# --- Production Overrides ---
+# ENVIRONMENT=production
+# LOG_LEVEL=info
+# EMAIL_DELIVERY_DISABLED=false
+# GMAIL_REDIRECT_URI=https://your-backend.com
