@@ -30,7 +30,7 @@ const CandidateInterviewPage = () => {
 
   const loadResume = async () => {
     try {
-      const profile = await authService.getProfile();
+      const profile = await authService.me();
       setResumeText(profile.resume_text || '');
     } catch (error) {
       console.error('Failed to load resume:', error);
