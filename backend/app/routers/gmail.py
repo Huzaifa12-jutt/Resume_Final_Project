@@ -5,22 +5,20 @@ Gmail integration router for OAuth flow and email fetching.
 """
 
 import sys
-from fastapi import APIRouter, HTTPException, Query, Depends
+import uuid
+from datetime import datetime, timezone
+from urllib.parse import urlsplit
+from fastapi import APIRouter, HTTPException, Query, Depends, Request
 from fastapi.responses import RedirectResponse
 from typing import Optional
 from pydantic import BaseModel
+from app.core.config import get_settings
 from app.services.gmail_fetcher import GmailFetcher
 from app.db.supabase_client import get_supabase
-import uuid
+from app.routers.auth import current_user
 
 router = APIRouter(prefix="/gmail", tags=["Gmail"])
-
-
-class TokenResponse(BaseModel):
-    access_token: str
-    refresh_token: str
-    token_expiry: Optional[str]
-    email: Optional[str]
+settings = get_settings()
 
 
 class FetchResponse(BaseModel):
@@ -36,10 +34,15 @@ class StatusResponse(BaseModel):
 
 
 @router.get("/auth")
-async def get_auth_url():
-    """Generate Google OAuth authorization URL"""
+def get_auth_url(user=Depends(current_user)):
+    """Generate Google OAuth authorization URL for the logged-in recruiter.
+
+    The authenticated user's id is passed through as the OAuth ``state`` value
+    so the callback knows which account to attach the token to — this is what
+    makes the connection status show up for the right user.
+    """
     try:
-        auth_url = GmailFetcher.get_auth_url()
+        auth_url = GmailFetcher.get_auth_url(state=user["id"])
         return {"auth_url": auth_url}
     except RuntimeError as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -47,42 +50,61 @@ async def get_auth_url():
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get("/auth/callback")
-async def auth_callback(code: str = Query(...), state: Optional[str] = None, user_id: Optional[str] = None):
-    """Handle OAuth callback and store token"""
+def process_oauth_callback(request: Request, code: str, state: Optional[str]) -> RedirectResponse:
+    """Shared OAuth callback logic.
+
+    Both the real callback route (``/gmail/auth/callback``) and a compatibility
+    handler at the API root (``/``) call this — Google will happily redirect
+    back to whichever redirect URI is registered on the OAuth client, so we
+    make both paths work instead of requiring the console to be configured
+    exactly one way.
+
+    On success the browser is bounced back to the recruiter settings page with
+    ``?gmail_connected=true``; on failure it is bounced back with
+    ``?gmail_connected=error`` so the user is never stranded on a raw JSON
+    error page in the middle of the flow.
+    """
+    frontend_base = settings.FRONTEND_URL.rstrip('/')
+
+    def _fail(reason: str) -> RedirectResponse:
+        return RedirectResponse(
+            url=f"{frontend_base}/recruiter/settings?gmail_connected=error&reason={reason}"
+        )
+
     try:
+        # Google echoes back whatever was passed as `state` — we passed the
+        # recruiter's user id when building the auth URL. Only `state` is
+        # trusted here (never a caller-supplied user_id) so a completed OAuth
+        # flow can only ever attach a token to the account that started it.
+        resolved_user_id = state
+        if not resolved_user_id:
+            return _fail("missing_state")
+
+        # User ids are UUIDs in our schema; reject anything malformed before
+        # doing any work (a real Google callback always carries a valid one).
+        # Note: only UUID-shaped ids pass — legacy/manual non-UUID user ids
+        # would fail here with invalid_state.
+        try:
+            uuid.UUID(str(resolved_user_id))
+        except ValueError:
+            return _fail("invalid_state")
+
         supabase = get_supabase()
-        
-        # Exchange code for token
-        token_data = GmailFetcher.exchange_code_for_token(code)
-        
-        # For simplicity, create or get a user (in production, use actual auth)
-        if not user_id:
-            # Create a default user or use the email
-            user_email = token_data.get('email')
-            if not user_email:
-                raise HTTPException(status_code=400, detail="Could not get user email")
-            
-            # Check if user exists
-            existing_user = supabase.table('users').select('id').eq('email', user_email).execute()
-            
-            if existing_user.data:
-                user_id = existing_user.data[0]['id']
-            else:
-                # Create new user
-                new_user = supabase.table('users').insert({
-                    'email': user_email,
-                    'full_name': user_email.split('@')[0],
-                    'first_name': user_email.split('@')[0],
-                    'last_name': '',
-                    'password_hash': 'temp',
-                    'role': 'recruiter'
-                }).execute()
-                user_id = new_user.data[0]['id']
-        
-        # Store or update token
-        existing_token = supabase.table('gmail_tokens').select('*').eq('user_id', user_id).execute()
-        
+
+        # Derive the exact redirect URI Google used for this callback from the
+        # request URL itself (Google echoes back the redirect URI from the auth
+        # request, and the token endpoint requires an exact match). This keeps
+        # the exchange correct whether the OAuth client is registered with the
+        # bare root (http://localhost:8000) or the full callback path.
+        parts = urlsplit(str(request.url))
+        redirect_uri = f"{parts.scheme}://{parts.netloc}{'' if parts.path == '/' else parts.path}"
+
+        # Exchange code for token using that exact redirect URI
+        token_data = GmailFetcher.exchange_code_for_token(code, redirect_uri=redirect_uri)
+
+        # Store or update token against the real (logged-in) recruiter
+        existing_token = supabase.table('gmail_tokens').select('*').eq('user_id', resolved_user_id).execute()
+
         if existing_token.data:
             # Update existing token
             supabase.table('gmail_tokens').update({
@@ -90,31 +112,51 @@ async def auth_callback(code: str = Query(...), state: Optional[str] = None, use
                 'access_token': token_data['access_token'],
                 'refresh_token': token_data['refresh_token'],
                 'token_expiry': token_data.get('token_expiry'),
-                'updated_at': 'NOW()'
-            }).eq('user_id', user_id).execute()
+                'updated_at': datetime.now(timezone.utc).isoformat()
+            }).eq('user_id', resolved_user_id).execute()
         else:
             # Insert new token
             supabase.table('gmail_tokens').insert({
                 'id': str(uuid.uuid4()),
-                'user_id': user_id,
+                'user_id': resolved_user_id,
                 'email': token_data.get('email'),
                 'access_token': token_data['access_token'],
                 'refresh_token': token_data['refresh_token'],
                 'token_expiry': token_data.get('token_expiry')
             }).execute()
-        
-        # Redirect to frontend
-        return RedirectResponse(url="http://localhost:5173/settings?gmail_connected=true")
-        
-    except HTTPException:
-        raise
+
+        # Redirect back to the recruiter settings page so the status re-checks
+        return RedirectResponse(url=f"{frontend_base}/recruiter/settings?gmail_connected=true")
+
+    except Exception:
+        # Never leave the user on a raw error page mid-flow — bounce them back
+        # to the app where the error banner explains what happened. (The state
+        # checks above already short-circuit with _fail(), so anything reaching
+        # here is an exchange/storage failure.)
+        return _fail("error")
+
+
+@router.get("/auth/callback")
+def auth_callback(request: Request, code: str = Query(...), state: Optional[str] = None):
+    """Handle OAuth callback and store token for the requesting user."""
+    return process_oauth_callback(request, code, state)
+
+
+@router.delete("/disconnect", status_code=204)
+def disconnect_gmail(user=Depends(current_user)):
+    """Remove the stored Gmail token for the logged-in user."""
+    try:
+        supabase = get_supabase()
+        supabase.table('gmail_tokens').delete().eq('user_id', user['id']).execute()
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.post("/fetch", response_model=FetchResponse)
-async def fetch_emails(user_id: str = Query(...), job_id: str = Query(None)):
-    """Fetch emails from Gmail, parse resumes, and save candidates"""
+def fetch_emails(job_id: str = Query(None), user=Depends(current_user)):
+    """Fetch emails from Gmail, parse resumes, and save candidates for the
+    logged-in recruiter."""
+    user_id = user["id"]
     print(f"\n🔵 === GMAIL FETCH STARTED ===", flush=True)
     print(f"🔵 User ID: {user_id}", flush=True)
     sys.stdout.flush()
@@ -299,11 +341,11 @@ async def fetch_emails(user_id: str = Query(...), job_id: str = Query(None)):
 
 
 @router.get("/status", response_model=StatusResponse)
-async def get_gmail_status(user_id: str = Query(...)):
-    """Check Gmail connection status for a user"""
+def get_gmail_status(user=Depends(current_user)):
+    """Check Gmail connection status for the logged-in recruiter."""
     try:
         supabase = get_supabase()
-        token_data = supabase.table('gmail_tokens').select('*').eq('user_id', user_id).execute()
+        token_data = supabase.table('gmail_tokens').select('*').eq('user_id', user['id']).execute()
         
         if token_data.data:
             return StatusResponse(

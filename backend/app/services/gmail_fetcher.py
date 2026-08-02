@@ -9,15 +9,34 @@ import os
 import base64
 import io
 from typing import List, Dict, Optional, Tuple
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import Flow
-from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError
 from datetime import datetime
 from dotenv import load_dotenv
 from .resume_parser import parse_resume
 
 load_dotenv()
+
+
+def _google():
+    """Lazily import the Google API client libraries.
+
+    These are heavyweight, optional dependencies that are only needed for
+    the Gmail resume-fetching feature. Importing them on demand (instead of
+    at module load) keeps the rest of the backend fully bootable even when
+    they aren't installed, and raises a clear, actionable error if the
+    Gmail feature is actually used without them.
+    """
+    try:
+        from google.oauth2.credentials import Credentials
+        from google_auth_oauthlib.flow import Flow
+        from googleapiclient.discovery import build
+        from googleapiclient.errors import HttpError
+        import google.auth.transport.requests
+    except ImportError as exc:
+        raise RuntimeError(
+            "Gmail integration requires the Google API client libraries. "
+            "Install them with: pip install google-auth google-auth-oauthlib google-api-python-client"
+        ) from exc
+    return Credentials, Flow, build, HttpError, google.auth.transport.requests
 
 SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
 RESUME_KEYWORDS = ['resume', 'cv', 'application', 'job', 'career', 'position', 'candidate']
@@ -35,11 +54,20 @@ class GmailFetcher:
     """Gmail API integration for fetching resumes"""
 
     @staticmethod
-    def get_flow() -> Flow:
-        """Create OAuth flow for Gmail authentication"""
+    def get_flow(redirect_uri: Optional[str] = None):
+        """Create OAuth flow for Gmail authentication.
+
+        ``redirect_uri`` defaults to GMAIL_REDIRECT_URI (or the documented
+        callback path), but callers can override it with the exact URL the
+        OAuth callback actually landed on — this keeps the token exchange in
+        sync with whatever redirect URI the authorization request used.
+        """
+        _, Flow, _, _, _ = _google()
         client_id = os.getenv("GMAIL_CLIENT_ID")
         client_secret = os.getenv("GMAIL_CLIENT_SECRET")
-        redirect_uri = os.getenv("GMAIL_REDIRECT_URI", "http://localhost:8000")
+        # Must point at the actual callback route (not the API root) so Google
+        # redirects the browser back to a handler that can exchange the code.
+        redirect_uri = redirect_uri or os.getenv("GMAIL_REDIRECT_URI", "http://localhost:8000/gmail/auth/callback")
         
         if not client_id or not client_secret:
             raise RuntimeError("GMAIL_CLIENT_ID and GMAIL_CLIENT_SECRET must be set in environment")
@@ -60,20 +88,31 @@ class GmailFetcher:
         return flow
 
     @staticmethod
-    def get_auth_url() -> str:
-        """Generate OAuth authorization URL"""
+    def get_auth_url(state: Optional[str] = None) -> str:
+        """Generate OAuth authorization URL.
+
+        ``state`` is echoed back unchanged by Google on the callback, so the
+        caller can pass the logged-in user's id through to identify them.
+        """
         flow = GmailFetcher.get_flow()
         auth_url, _ = flow.authorization_url(
             access_type='offline',
             include_granted_scopes='true',
-            prompt='consent'
+            prompt='consent',
+            state=state,
         )
         return auth_url
 
     @staticmethod
-    def exchange_code_for_token(code: str) -> Dict:
-        """Exchange authorization code for access token"""
-        flow = GmailFetcher.get_flow()
+    def exchange_code_for_token(code: str, redirect_uri: Optional[str] = None) -> Dict:
+        """Exchange authorization code for access token.
+
+        ``redirect_uri`` is passed through to :meth:`get_flow` so the exchange
+        uses the same redirect URI that the authorization request used — this
+        is what makes a callback landing on the bare root (instead of
+        /gmail/auth/callback) still complete successfully.
+        """
+        flow = GmailFetcher.get_flow(redirect_uri=redirect_uri)
         flow.fetch_token(code=code)
         credentials = flow.credentials
         
@@ -85,9 +124,10 @@ class GmailFetcher:
         }
 
     @staticmethod
-    def get_user_email(credentials: Credentials) -> Optional[str]:
+    def get_user_email(credentials) -> Optional[str]:
         """Get user email from Gmail API"""
         try:
+            _, _, build, _, _ = _google()
             service = build('gmail', 'v1', credentials=credentials)
             profile = service.users().getProfile(userId='me').execute()
             return profile.get('emailAddress')
@@ -96,8 +136,9 @@ class GmailFetcher:
             return None
 
     @staticmethod
-    def credentials_from_token(token_data: Dict) -> Credentials:
+    def credentials_from_token(token_data: Dict):
         """Create Credentials object from stored token data"""
+        Credentials, _, _, _, _ = _google()
         expiry = None
         if token_data.get('token_expiry'):
             expiry = datetime.fromisoformat(token_data['token_expiry'])
@@ -113,18 +154,19 @@ class GmailFetcher:
         return credentials
 
     @staticmethod
-    def refresh_credentials(credentials: Credentials) -> Credentials:
+    def refresh_credentials(credentials):
         """Refresh expired credentials"""
         if credentials.expired and credentials.refresh_token:
-            import google.auth.transport.requests
-            credentials.refresh(google.auth.transport.requests.Request())
+            _, _, _, _, requests = _google()
+            credentials.refresh(requests.Request())
         return credentials
 
     @staticmethod
-    def fetch_emails_with_attachments(credentials: Credentials) -> List[Dict]:
+    def fetch_emails_with_attachments(credentials) -> List[Dict]:
         """Fetch emails with PDF/DOC attachments from INBOX and SPAM"""
         print(f"\n🔵 === FETCHING EMAILS FROM GMAIL ===")
         try:
+            _, _, build, HttpError, _ = _google()
             credentials = GmailFetcher.refresh_credentials(credentials)
             print(f"🔵 Credentials refreshed")
             service = build('gmail', 'v1', credentials=credentials)
@@ -370,6 +412,7 @@ class GmailFetcher:
         
         email = None
         try:
+            _, _, build, _, _ = _google()
             service = build('gmail', 'v1', credentials=credentials)
             profile = service.users().getProfile(userId='me').execute()
             email = profile.get('emailAddress')

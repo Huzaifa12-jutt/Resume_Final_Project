@@ -8,3 +8,8 @@ scikit-learn==1.8.0
 PyPDF2==3.0.1
 reportlab==4.4.10
 python-dotenv==1.2.2
+
+# Gmail integration (optional feature — lazy-imported by the backend)
+google-auth==2.42.0
+google-auth-oauthlib==1.2.2
+google-api-python-client==2.179.0

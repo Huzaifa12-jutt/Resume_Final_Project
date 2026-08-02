@@ -14,5 +14,6 @@ export const endpoints = {
     callback: '/gmail/auth/callback',
     fetch: '/gmail/fetch',
     status: '/gmail/status',
+    disconnect: '/gmail/disconnect',
   },
 };

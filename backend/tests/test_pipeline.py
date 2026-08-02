@@ -180,12 +180,12 @@ def run():
     check("GET /auth/me returns 200 (or auth override works)", r.status_code in (200, 401))
 
     # 4. Company management (uses dependency override)
-    r = client.get("/company", headers=auth_headers)
+    r = client.get("/ats/company", headers=auth_headers)
     check("GET /company returns 200", r.status_code == 200)
     check("company has correct name", r.json().get("company_name") == "TestCorp")
 
     # 5. Create a job
-    r = client.post("/recruiter/jobs", json={
+    r = client.post("/ats/recruiter/jobs", json={
         "title": "Senior AI/ML Engineer",
         "description": ("Senior AI/ML Engineer\nRequirements: 5+ years Python and ML "
                          "experience, TensorFlow/PyTorch, NLP, Computer Vision, AWS/GCP, "
@@ -199,7 +199,7 @@ def run():
     check("job title is correct", job["title"] == "Senior AI/ML Engineer")
 
     # 6. List jobs
-    r = client.get("/recruiter/jobs", headers=auth_headers)
+    r = client.get("/ats/recruiter/jobs", headers=auth_headers)
     check("GET /recruiter/jobs returns 200", r.status_code == 200)
     jobs = r.json()
     check("at least 1 job listed", len(jobs) >= 1)
@@ -224,7 +224,7 @@ def run():
     print(f"    -> #{ranked[1]['rank']} {ranked[1]['name']} {ranked[1]['overall_score']}% ({ranked[1]['tier']})")
 
     # 9. Fetch job detail with candidates
-    r = client.get(f"/recruiter/jobs/{job_id}", headers=auth_headers)
+    r = client.get(f"/ats/recruiter/jobs/{job_id}", headers=auth_headers)
     check("GET /recruiter/jobs/{id} returns 200", r.status_code == 200)
     job_data = r.json()
     check("job detail has candidates list", len(job_data.get("candidates", [])) == 2)
@@ -253,14 +253,14 @@ def run():
     check("export contains both candidates", r.text.count("\n") >= 3)
 
     # 13. Analytics
-    r = client.get("/analytics/overview", headers=auth_headers)
+    r = client.get("/ats/analytics/overview", headers=auth_headers)
     check("GET /analytics/overview returns 200", r.status_code == 200)
     analytics = r.json()
     check("analytics has total_jobs", analytics.get("total_jobs", 0) >= 1)
     check("analytics has average_ai_score", analytics.get("average_ai_score", 0) >= 0)
 
     # 14. Search jobs (public endpoint)
-    r = client.get("/jobs/search")
+    r = client.get("/ats/jobs/search")
     check("GET /jobs/search returns 200", r.status_code == 200)
     search_results = r.json()
     check("search returns at least 1 result", len(search_results) >= 1)
@@ -270,7 +270,7 @@ def run():
     check("GET /notifications returns 200", r.status_code == 200)
 
     # 16. AI Description generation
-    r = client.post("/jobs/ai-description", json={
+    r = client.post("/ats/jobs/ai-description", json={
         "position": "Software Engineer",
         "seniority": "Senior",
         "skills": ["Python", "React"],
@@ -282,11 +282,11 @@ def run():
     check("DELETE candidate returns 204", r.status_code == 204)
 
     # 18. Delete job
-    r = client.delete(f"/recruiter/jobs/{job_id}", headers=auth_headers)
+    r = client.delete(f"/ats/recruiter/jobs/{job_id}", headers=auth_headers)
     check("DELETE job returns 204", r.status_code == 204)
 
     # 19. Verify job is gone
-    r = client.get(f"/recruiter/jobs/{job_id}", headers=auth_headers)
+    r = client.get(f"/ats/recruiter/jobs/{job_id}", headers=auth_headers)
     check("GET deleted job returns 404", r.status_code == 404)
 
     # 20. Forgot/Reset password flow

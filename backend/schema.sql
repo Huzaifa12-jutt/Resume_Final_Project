@@ -122,6 +122,7 @@ create index if not exists idx_candidates_job_id on candidates(job_id);
 create table if not exists scores (
     id                    uuid primary key default gen_random_uuid(),
     candidate_id          uuid references candidates(id) on delete cascade,
+    job_id                uuid references jobs(id) on delete cascade,
     overall_score         numeric,
     skills_score          numeric,
     experience_score      numeric,
@@ -242,3 +243,27 @@ create table if not exists saved_jobs (
     primary key (user_id, job_id)
 );
 create index if not exists idx_saved_jobs_user on saved_jobs(user_id, created_at desc);
+
+-- =============================================================================
+-- Gmail integration migration (safe to run after the original schema)
+-- =============================================================================
+-- Stores the OAuth token a recruiter grants for fetching resume attachments.
+create table if not exists gmail_tokens (
+    id uuid primary key default gen_random_uuid(),
+    user_id uuid not null references users(id) on delete cascade,
+    email text,
+    access_token text,
+    refresh_token text,
+    token_expiry timestamptz,
+    created_at timestamptz not null default now(),
+    updated_at timestamptz not null default now()
+);
+create index if not exists idx_gmail_tokens_user on gmail_tokens(user_id);
+
+-- Candidates sourced from Gmail attachments carry provenance metadata plus the
+-- job they were attached to, so the recruiter dashboard can filter them.
+alter table candidates add column if not exists source text not null default 'manual';
+alter table candidates add column if not exists gmail_message_id text;
+alter table candidates add column if not exists gmail_sender text;
+alter table candidates add column if not exists gmail_subject text;
+alter table candidates add column if not exists gmail_folder text;
