@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { User, Mail, Lock, BriefcaseBusiness, UserRound, CheckCircle2, UserPlus } from 'lucide-react';
 import AuthLayout from '../../layouts/AuthLayout';
@@ -26,7 +26,8 @@ const Register = () => {
   useDocumentTitle('Create Account');
   const { register: registerAuth } = useAuth();
   const navigate = useNavigate();
-  const [role, setRole] = useState('recruiter');
+  const [searchParams] = useSearchParams();
+  const [role, setRole] = useState(searchParams.get('role') === 'recruiter' ? 'recruiter' : 'candidate');
 
   const {
     register,

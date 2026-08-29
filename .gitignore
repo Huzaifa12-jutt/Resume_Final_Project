@@ -2,6 +2,7 @@
 .env
 .env.*
 !.env.example
+backend/env
 
 # Python
 __pycache__/
@@ -11,6 +12,11 @@ __pycache__/
 venv/
 .venv/
 *.egg-info/
+
+# Frontend / build output
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
 
 # OS / editor junk
 .DS_Store

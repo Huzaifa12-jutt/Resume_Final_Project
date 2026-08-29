@@ -39,7 +39,7 @@ const navLinks = [
   { name: 'Contact', href: '#contact' },
 ];
 
-const companies = ['Northwind', 'Quantum', 'Stackly', 'Nebula', 'Vertex', 'Orbital'];
+const companies = ['TEEROP', 'Apex', 'UrbanNest', 'Nexa', 'Vanta', 'Orbit'];
 
 const features = [
   { icon: FileText, title: 'AI Resume Parsing', description: 'Instantly extract skills, experience, and education into clean structured data from any resume format.' },
@@ -58,10 +58,31 @@ const steps = [
 ];
 
 const testimonials = [
-  { name: 'Britt Mercer', role: 'Head of Talent, Quantum', quote: '                TalentLense cut our screening time dramatically. We spend our energy talking to great people instead of sorting PDFs.' },
+  { name: 'Britt Mercer', role: 'Head of Talent, Quantum', quote: 'TEEROP cut our screening time dramatically. We spend our energy talking to great people instead of sorting PDFs.' },
   { name: 'Daniel Reyes', role: 'Recruiting Lead, Vertex', quote: 'The AI ranking is remarkably accurate and the assistant feels like a real teammate on the hiring team.' },
   { name: 'Priya Nair', role: 'Founder, Stackly', quote: 'We went from a spreadsheet of resumes to a ranked shortlist in minutes. It changed how we hire.' },
 ];
+
+function BrandWordmark({ large = false }) {
+  return (
+    <span
+      className={[
+        'inline-flex items-center select-none font-black leading-none uppercase',
+        large ? 'text-[2.2rem] sm:text-[3rem] lg:text-[4.25rem]' : 'text-[1.1rem] sm:text-[1.2rem]',
+      ].join(' ')}
+      style={{
+        letterSpacing: large ? '-0.075em' : '-0.065em',
+        background: 'linear-gradient(90deg, #06b6d4 0%, #14b8a6 26%, #0ea5e9 48%, #2563eb 100%)',
+        WebkitBackgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
+        backgroundClip: 'text',
+        textShadow: '0 12px 28px rgba(6, 182, 212, 0.12)',
+      }}
+    >
+      TEEROP
+    </span>
+  );
+}
 
 /* ------------------------------------------------------------------ */
 /* Navbar — sticky, blurred, smooth-scroll with active-section state   */
@@ -106,10 +127,10 @@ function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2.5">
-          <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-teal-600 to-indigo-600 text-white flex items-center justify-center">
+          <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-cyan-500 via-teal-500 to-indigo-600 text-white flex items-center justify-center shadow-lg shadow-cyan-500/20">
             <LensMark size={16} tone="light" />
           </div>
-          <span className="text-lg font-bold text-slate-900 tracking-tight">TalentLense</span>
+          <BrandWordmark />
         </Link>
 
         <nav className="hidden md:flex items-center gap-1">
@@ -177,95 +198,120 @@ export default function LandingPage() {
       <main>
         {/* Hero */}
         <section id="home" className="relative overflow-hidden pt-32 pb-20 lg:pt-40 lg:pb-28">
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,_rgba(20,184,166,0.15),_transparent_45%),radial-gradient(circle_at_85%_0%,_rgba(79,70,229,0.12),_transparent_40%),radial-gradient(circle_at_50%_80%,_rgba(168,85,247,0.08),_transparent_50%)]" />
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,_rgba(56,189,248,0.18),_transparent_28%),radial-gradient(circle_at_82%_8%,_rgba(37,99,235,0.12),_transparent_24%),radial-gradient(circle_at_50%_80%,_rgba(125,211,252,0.12),_transparent_32%)]" />
+          <div className="pointer-events-none absolute -left-16 top-20 h-72 w-72 rounded-full bg-sky-200/20 blur-3xl" />
+          <div className="pointer-events-none absolute right-0 top-12 h-80 w-80 rounded-full bg-blue-200/20 blur-3xl" />
 
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-12 gap-12 items-center">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
+              transition={{ duration: 0.6, ease: 'easeOut' }}
               className="lg:col-span-7 text-center lg:text-left"
             >
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-teal-200 bg-teal-50 px-3 py-1 text-xs font-semibold text-teal-700">
-                <Sparkles size={12} /> Powered by AI Resume Ranking Engine
+              <span className="inline-flex items-center gap-2 rounded-full border border-sky-200 bg-white/80 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.22em] text-sky-700 shadow-sm backdrop-blur-sm">
+                <Sparkles size={12} /> Professional AI hiring platform
               </span>
 
-              <h1 className="mt-6 text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-[1.05]">
-                Find the Right Talent <span className="bg-gradient-to-r from-teal-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">Faster with AI</span>
+              <div className="mt-6">
+                <BrandWordmark large />
+              </div>
+
+              <h1 className="mt-5 text-[2.65rem] sm:text-[3.6rem] lg:text-[5rem] font-black text-slate-900 tracking-[-0.07em] leading-[0.9]">
+                Hire smarter,<br className="hidden sm:block" /> <span className="bg-gradient-to-r from-cyan-600 via-sky-600 to-blue-700 bg-clip-text text-transparent">faster, and with more clarity.</span>
               </h1>
 
-              <p className="mt-6 text-lg text-slate-500 leading-relaxed max-w-xl mx-auto lg:mx-0">
-                TalentLense screens resumes, ranks candidates against your job description, and surfaces
-                your best applicants in seconds — so your team can focus on people, not paperwork.
+              <p className="mt-6 text-lg sm:text-xl text-slate-600 leading-relaxed max-w-xl mx-auto lg:mx-0">
+                TEEROP helps modern teams screen resumes, rank candidates against the role, and move the right talent forward with AI-powered hiring intelligence.
               </p>
 
               <div className="mt-8 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
                 <Link
-                  to="/register"
-                  className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-teal-600 to-indigo-600 px-8 py-3 text-base font-semibold text-white shadow-lg shadow-teal-600/30 transition hover:shadow-xl hover:shadow-teal-600/40 hover:scale-105 w-full sm:w-auto justify-center"
+                  to="/register?role=candidate"
+                  className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-sky-500 via-cyan-500 to-blue-700 px-8 py-3.5 text-base font-bold text-white shadow-xl shadow-sky-500/20 transition hover:-translate-y-0.5 hover:shadow-2xl hover:shadow-blue-500/25 w-full sm:w-auto justify-center"
                 >
-                  Get Started <ArrowRight size={18} />
+                  Apply as candidate <ArrowRight size={18} />
                 </Link>
-                <a
-                  href="#how-it-works"
-                  className="inline-flex items-center gap-2 rounded-xl border-2 border-slate-200 bg-white px-8 py-3 text-base font-semibold text-slate-700 transition hover:bg-slate-50 hover:border-teal-300 w-full sm:w-auto justify-center"
+                <Link
+                  to="/jobs"
+                  className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white/80 px-8 py-3.5 text-base font-bold text-slate-700 shadow-sm transition hover:border-sky-300 hover:bg-sky-50/30 w-full sm:w-auto justify-center"
                 >
-                  <PlayCircle size={18} /> Learn More
-                </a>
+                  <PlayCircle size={18} /> Explore jobs
+                </Link>
+              </div>
+
+              <div className="mt-8 flex flex-wrap items-center justify-center lg:justify-start gap-4 text-sm text-slate-500">
+                <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white/80 px-3 py-2 shadow-sm">
+                  <CheckCircle2 size={14} className="text-sky-600" /> 4x faster screening
+                </div>
+                <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white/80 px-3 py-2 shadow-sm">
+                  <CheckCircle2 size={14} className="text-sky-600" /> Real-time ranking
+                </div>
               </div>
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1, duration: 0.5 }}
+              transition={{ delay: 0.12, duration: 0.6, ease: 'easeOut' }}
               className="lg:col-span-5 relative"
             >
-              <div className="bg-white rounded-3xl p-6 shadow-2xl border border-slate-100 space-y-4">
-                <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center">
-                      <Award size={18} />
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-bold text-slate-900">AI Match Engine</h4>
-                      <p className="text-xs text-slate-400">Senior Frontend Engineer</p>
-                    </div>
-                  </div>
-                  <span className="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold border border-emerald-100">
-                    98% Match
-                  </span>
-                </div>
+              <div className="relative rounded-[2rem] border border-slate-200/80 bg-slate-950 p-5 shadow-[0_30px_80px_rgba(15,23,42,0.18)]">
+                <div className="absolute -inset-4 rounded-[2.5rem] bg-gradient-to-br from-cyan-200/20 via-sky-200/10 to-blue-200/20 blur-2xl" />
+                <div className="relative overflow-hidden rounded-[1.6rem] border border-white/10 bg-gradient-to-br from-cyan-500 via-sky-500 to-blue-700 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.25)]">
+                  <div className="absolute right-5 top-5 h-3 w-3 rounded-full bg-sky-200 shadow-[0_0_18px_rgba(186,230,253,0.9)]" />
+                  <div className="absolute -left-10 top-10 h-32 w-32 rounded-full bg-white/10 blur-3xl" />
+                  <div className="absolute -right-12 bottom-0 h-40 w-40 rounded-full bg-sky-200/20 blur-3xl" />
 
-                <div className="p-3.5 rounded-2xl bg-slate-50 flex items-center justify-between border border-slate-100">
-                  <div className="flex items-center gap-3">
-                    <span className="flex h-7 w-7 rounded-full bg-indigo-600 text-white font-bold text-xs items-center justify-center">#1</span>
-                    <div>
-                      <p className="text-xs font-bold text-slate-900">Sarah Jenkins</p>
-                      <p className="text-[10px] text-slate-400">React, TypeScript, Next.js</p>
+                  <div className="relative flex min-h-[300px] flex-col justify-between">
+                    <div className="flex items-center justify-between text-white/90">
+                      <span className="text-[10px] font-bold uppercase tracking-[0.26em]">TEEROP</span>
+                      <span className="rounded-full border border-white/20 bg-white/10 px-2 py-1 text-[9px] font-semibold uppercase tracking-[0.18em]">Live</span>
                     </div>
-                  </div>
-                  <span className="text-sm font-extrabold text-indigo-700">96%</span>
-                </div>
 
-                <div className="p-3.5 rounded-2xl bg-slate-50 flex items-center justify-between border border-slate-100">
-                  <div className="flex items-center gap-3">
-                    <span className="flex h-7 w-7 rounded-full bg-slate-200 text-slate-700 font-bold text-xs items-center justify-center">#2</span>
-                    <div>
-                      <p className="text-xs font-bold text-slate-900">David Chen</p>
-                      <p className="text-[10px] text-slate-400">Vue, JavaScript, Tailwind</p>
+                    <div className="space-y-3 pt-6">
+                      <span
+                        className="block text-[4.2rem] sm:text-[4.7rem] font-black uppercase leading-none tracking-[-0.08em] text-white drop-shadow-[0_10px_20px_rgba(14,116,144,0.35)]"
+                        style={{ textShadow: '0 12px 28px rgba(14, 116, 144, 0.35)' }}
+                      >
+                        TEEROP
+                      </span>
+                    </div>
+
+                    <div className="rounded-2xl border border-white/20 bg-slate-950/20 p-3 backdrop-blur-sm">
+                      <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.22em] text-cyan-50/90">
+                        <span>match score</span>
+                        <span>98%</span>
+                      </div>
+                      <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/15">
+                        <div className="h-full w-[98%] rounded-full bg-white" />
+                      </div>
                     </div>
                   </div>
-                  <span className="text-sm font-extrabold text-slate-700">84%</span>
                 </div>
 
-                <div className="p-3 rounded-xl bg-indigo-50/60 flex items-center gap-2 border border-indigo-100">
-                  <TrendingUp size={16} className="text-indigo-600 shrink-0" />
-                  <span className="text-xs text-indigo-700">Analytics update in real time as resumes are processed.</span>
-                </div>
+                <div className="relative mt-4 space-y-3 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
+                  <div className="flex items-center justify-between rounded-xl bg-slate-50 p-3">
+                    <div className="flex items-center gap-3">
+                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 text-xs font-bold text-white">#1</span>
+                      <div>
+                        <p className="text-xs font-bold text-slate-900">Sarah Jenkins</p>
+                        <p className="text-[10px] text-slate-500">React · TypeScript · Next.js</p>
+                      </div>
+                    </div>
+                    <span className="text-sm font-extrabold text-cyan-700">96%</span>
+                  </div>
 
-                <div className="flex items-center gap-2 text-xs text-slate-500">
-                  <CheckCircle2 size={14} className="text-emerald-500" /> 12 skills detected · 5 yrs experience
+                  <div className="flex items-center justify-between rounded-xl bg-slate-50 p-3">
+                    <div className="flex items-center gap-3">
+                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 text-xs font-bold text-slate-700">#2</span>
+                      <div>
+                        <p className="text-xs font-bold text-slate-900">David Chen</p>
+                        <p className="text-[10px] text-slate-500">Vue · JavaScript · Tailwind</p>
+                      </div>
+                    </div>
+                    <span className="text-sm font-extrabold text-slate-700">84%</span>
+                  </div>
                 </div>
               </div>
             </motion.div>
@@ -288,7 +334,7 @@ export default function LandingPage() {
         <section id="features" className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-teal-50/50 via-indigo-50/30 to-purple-50/50 border-y border-slate-100">
           <div className="max-w-7xl mx-auto">
             <div className="text-center max-w-2xl mx-auto mb-14 space-y-3">
-              <p className="text-xs font-bold uppercase tracking-widest text-teal-600">Features</p>
+              <p className="text-xs font-bold uppercase tracking-widest text-sky-600">Features</p>
               <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">Everything you need to hire smarter</h2>
               <p className="text-slate-500 text-base">
                 A complete AI toolkit that removes the manual work from screening and lets you focus on people.
@@ -303,12 +349,12 @@ export default function LandingPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1, duration: 0.4 }}
-                  className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-teal-200"
+                  className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-sky-200"
                 >
                   <div className={`h-11 w-11 rounded-2xl flex items-center justify-center mb-5 ${
-                    i % 3 === 0 ? 'bg-gradient-to-br from-teal-50 to-teal-100 text-teal-600' :
-                    i % 3 === 1 ? 'bg-gradient-to-br from-indigo-50 to-indigo-100 text-indigo-600' :
-                    'bg-gradient-to-br from-purple-50 to-purple-100 text-purple-600'
+                    i % 3 === 0 ? 'bg-gradient-to-br from-sky-50 to-cyan-100 text-sky-700' :
+                    i % 3 === 1 ? 'bg-gradient-to-br from-blue-50 to-indigo-100 text-blue-700' :
+                    'bg-gradient-to-br from-cyan-50 to-sky-100 text-sky-700'
                   }`}>
                     <f.icon size={20} />
                   </div>
@@ -352,7 +398,7 @@ export default function LandingPage() {
         <section className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-50/50 border-y border-slate-100">
           <div className="max-w-7xl mx-auto">
             <div className="text-center max-w-2xl mx-auto mb-14 space-y-3">
-              <p className="text-xs font-bold uppercase tracking-widest text-indigo-600">Why Choose TalentLense</p>
+              <p className="text-xs font-bold uppercase tracking-widest text-indigo-600">Why Choose TEEROP</p>
               <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">Manual hiring vs. AI hiring</h2>
             </div>
 
@@ -367,7 +413,7 @@ export default function LandingPage() {
                 </ul>
               </div>
               <div className="bg-indigo-50/40 rounded-2xl border-2 border-indigo-100 shadow-sm p-8">
-                <h3 className="text-sm font-bold text-indigo-600 uppercase tracking-wide mb-4">AI Hiring with TalentLense</h3>
+                <h3 className="text-sm font-bold text-indigo-600 uppercase tracking-wide mb-4">AI Hiring with TEEROP</h3>
                 <ul className="space-y-3 text-sm text-slate-700 font-medium">
                   <li>Resumes parsed and ranked in seconds</li>
                   <li>Consistent, explainable scoring for every candidate</li>
@@ -413,12 +459,12 @@ export default function LandingPage() {
 
         {/* CTA */}
         <section className="py-20 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-5xl mx-auto rounded-[2rem] bg-gradient-to-br from-teal-600 via-indigo-600 to-purple-600 text-white p-10 sm:p-16 text-center shadow-2xl shadow-teal-600/30 relative overflow-hidden">
+          <div className="max-w-5xl mx-auto rounded-[2rem] bg-gradient-to-br from-sky-600 via-blue-700 to-indigo-700 text-white p-10 sm:p-16 text-center shadow-2xl shadow-blue-500/20 relative overflow-hidden">
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,_rgba(255,255,255,0.1),_transparent_50%),radial-gradient(circle_at_70%_80%,_rgba(255,255,255,0.08),_transparent_50%)]" />
             <Aperture className="pointer-events-none absolute -right-10 -top-10 h-56 w-56 text-white/10" />
             <h2 className="relative text-3xl sm:text-4xl font-bold tracking-tight">Ready to Transform Your Hiring Process?</h2>
-            <p className="relative mt-4 text-teal-100 max-w-xl mx-auto">
-              Join hiring teams using TalentLense to find the best talent faster than ever before.
+            <p className="relative mt-4 text-sky-100 max-w-xl mx-auto">
+              Join hiring teams using TEEROP to find the best talent faster than ever before.
             </p>
             <div className="relative mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
@@ -443,7 +489,7 @@ export default function LandingPage() {
             <div>                <p className="text-xs font-bold uppercase tracking-widest text-indigo-600 mb-3">Contact Us</p>
               <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight mb-4">Get in touch</h2>
               <p className="text-slate-500 mb-8">
-                Have questions about TalentLense or want to see a personalized demo? Send us a message and our team will get back to you shortly.
+                Have questions about TEEROP or want to see a personalized hiring workflow? Send us a message and our team will get back to you shortly.
               </p>
               <div className="space-y-4">
                 <div className="flex items-center gap-3 text-slate-600">
@@ -452,7 +498,7 @@ export default function LandingPage() {
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-slate-900">Email</p>
-                    <a href="mailto:hitechnologies2014@gmail.com" className="text-sm hover:text-indigo-600 transition">hitechnologies2014@gmail.com</a>
+                    <a href="mailto:contact@teerop.com" className="text-sm hover:text-indigo-600 transition">contact@teerop.com</a>
                   </div>
                 </div>
                 <div className="flex items-center gap-3 text-slate-600">
@@ -470,7 +516,7 @@ export default function LandingPage() {
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-slate-900">Address</p>
-                    <p className="text-sm">G-11 Markaz, Islamabad</p>
+                    <p className="text-sm">Islamabad, Pakistan</p>
                   </div>
                 </div>
               </div>
@@ -504,10 +550,10 @@ export default function LandingPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
             <div className="col-span-2 md:col-span-1 space-y-3">
               <div className="flex items-center gap-2 text-white font-bold text-lg">
-                <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center">
+                <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-cyan-500 via-teal-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
                   <LensMark size={14} tone="light" />
                 </div>
-                TalentLense
+                <BrandWordmark />
               </div>
               <p className="text-xs leading-relaxed">AI-powered applicant tracking for modern hiring teams.</p>
             </div>
@@ -533,7 +579,7 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="pt-8 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
-            <span>© {new Date().getFullYear()} TalentLense. All rights reserved.</span>
+            <span>© {new Date().getFullYear()} TEEROP. All rights reserved.</span>
           </div>
         </div>
       </footer>

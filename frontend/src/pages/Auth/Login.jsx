@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, ArrowRight, ShieldCheck } from 'lucide-react';
 import AuthLayout from '../../layouts/AuthLayout';
 import Button from '../../components/common/Button';
 import useAuth from '../../hooks/useAuth';
@@ -21,25 +21,24 @@ const Login = () => {
   } = useForm();
 
   const onSubmit = async (data) => {
-    console.log('🔵 Login button clicked');
-    console.log('🔵 Email:', data.email);
-    console.log('🔵 Password:', data.password ? '***' : 'empty');
     try {
-      console.log('🔵 Calling login function...');
       const user = await login(data.email, data.password);
-      console.log('🔵 Login successful:', user);
-      console.log('🔵 User role from backend:', user.role);
       const redirectPath = location.state?.from?.pathname || (user.role === 'recruiter' ? '/recruiter' : '/candidate');
-      console.log('🔵 Redirecting to:', redirectPath);
       navigate(redirectPath, { replace: true });
     } catch (error) {
-      console.error('🔴 Login error:', error);
       // Error handled by AuthContext
     }
   };
 
   return (
-    <AuthLayout title="Welcome Back" subtitle="Sign in to your TalentLense account to continue.">
+    <AuthLayout title="Welcome Back" subtitle="Secure access to your TEEROP hiring workspace.">
+      <div className="mb-5 rounded-2xl border border-emerald-100 bg-emerald-50/70 p-3 text-sm text-emerald-800 shadow-sm">
+        <div className="flex items-center gap-2 font-semibold">
+          <ShieldCheck size={16} />
+          Trusted access for candidates and hiring teams
+        </div>
+      </div>
+
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
         <div>
           <label className="block text-sm font-medium text-slate-900 mb-1.5">Email</label>

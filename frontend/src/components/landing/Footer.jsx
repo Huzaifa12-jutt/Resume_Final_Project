@@ -12,7 +12,7 @@ const Footer = () => {
               <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-indigo-600 to-blue-600 flex items-center justify-center">
                 <Sparkles className="h-4 w-4" />
               </div>
-              <span>TalentLense</span>
+              <span>TEEROP</span>
             </div>
             <p className="text-xs text-slate-400 leading-relaxed">
               AI-driven applicant tracking &amp; resume screening platform for modern teams.

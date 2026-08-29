@@ -26,11 +26,17 @@ import CandidateSettingsPage from '../pages/Candidate/CandidateSettingsPage';
 import CandidateInterviewPage from '../pages/Candidate/CandidateInterviewPage';
 import CandidateInterviewSessionPage from '../pages/Candidate/CandidateInterviewSessionPage';
 import CandidateInterviewResultsPage from '../pages/Candidate/CandidateInterviewResultsPage';
+import PublicJobsPage from '../pages/Public/PublicJobsPage';
+import PublicJobDetailPage from '../pages/Public/PublicJobDetailPage';
+import PublicProfilesPage from '../pages/Public/PublicProfilesPage';
 
 export default function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<PublicOnlyRoute><LandingPage /></PublicOnlyRoute>} />
+      <Route path="/jobs" element={<PublicJobsPage />} />
+      <Route path="/jobs/:jobId" element={<PublicJobDetailPage />} />
+      <Route path="/profiles" element={<PublicProfilesPage />} />
       <Route path="/login" element={<PublicOnlyRoute><Login /></PublicOnlyRoute>} />
       <Route path="/register" element={<PublicOnlyRoute><Register /></PublicOnlyRoute>} />
       <Route path="/verify-email" element={<PublicOnlyRoute><VerifyEmail /></PublicOnlyRoute>} />

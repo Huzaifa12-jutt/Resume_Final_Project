@@ -19,49 +19,40 @@
   --color-mist: #e2e8f0;
   --color-mist-dark: #94a3b8;
 
-  /* Primary — Deep Teal/Navy */
-  --color-primary-50: #f0fdfa;
-  --color-primary-100: #ccfbf1;
-  --color-primary-200: #99f6e4;
-  --color-primary-500: #14b8a6;
-  --color-primary-600: #0d9488;
-  --color-primary-700: #0f766e;
-  --color-primary-800: #115e59;
-  --color-primary-900: #134e4a;
-  --color-primary-950: #042f2e;
+  /* Premium minimal palette: ice blue / sky / deep blue */
+  --color-primary-50: #f0f9ff;
+  --color-primary-100: #e0f2fe;
+  --color-primary-200: #bae6fd;
+  --color-primary-500: #38bdf8;
+  --color-primary-600: #0ea5e9;
+  --color-primary-700: #0284c7;
+  --color-primary-800: #0369a1;
+  --color-primary-900: #0f4c81;
+  --color-primary-950: #0a2540;
 
-  /* Navy — Deep brand color */
-  --color-navy-50: #f0f4ff;
-  --color-navy-100: #e0e7ff;
-  --color-navy-200: #c7d2fe;
-  --color-navy-500: #6366f1;
-  --color-navy-600: #4f46e5;
-  --color-navy-700: #4338ca;
-  --color-navy-800: #3730a3;
-  --color-navy-900: #312e81;
-  --color-navy-950: #1e1b4b;
+  /* Deep blue / slate brand */
+  --color-navy-50: #f8fafc;
+  --color-navy-100: #e2e8f0;
+  --color-navy-200: #cbd5e1;
+  --color-navy-500: #3b82f6;
+  --color-navy-600: #2563eb;
+  --color-navy-700: #1d4ed8;
+  --color-navy-800: #1e3a8a;
+  --color-navy-900: #172554;
+  --color-navy-950: #020817;
 
-  /* Accent — Electric Emerald */
-  --color-accent-50: #ecfdf5;
-  --color-accent-100: #d1fae5;
-  --color-accent-200: #a7f3d0;
-  --color-accent-500: #10b981;
-  --color-accent-600: #059669;
-  --color-accent-700: #047857;
-  --color-accent-800: #065f46;
-  --color-accent-900: #064e3b;
-  --color-accent-950: #022c22;
+  /* Accent — soft cyan/ice */
+  --color-accent-50: #f0fdfa;
+  --color-accent-100: #dffaf8;
+  --color-accent-200: #c6f5ef;
+  --color-accent-500: #5eead4;
+  --color-accent-600: #2dd4bf;
+  --color-accent-700: #14b8a6;
+  --color-accent-800: #0f766e;
+  --color-accent-900: #134e4a;
+  --color-accent-950: #042f2e;
 
-  /* Secondary — Vibrant Purple */
-  --color-purple-50: #faf5ff;
-  --color-purple-100: #f3e8ff;
-  --color-purple-200: #e9d5ff;
-  --color-purple-500: #a855f7;
-  --color-purple-600: #9333ea;
-  --color-purple-700: #7c3aed;
-  --color-purple-800: #6b21a8;
-  --color-purple-900: #581c87;
-  --color-purple-950: #3b0764;
+  /* Minimal, readable status colors without a heavy green accent */
 
   /* Status colors */
   --color-verified-50: #ecfdf3;
@@ -86,11 +77,27 @@ html { scroll-behavior: smooth; }
 
 body {
   font-family: var(--font-sans);
-  background: var(--color-paper);
+  background:
+    radial-gradient(circle at top left, rgba(56, 189, 248, 0.18), transparent 28%),
+    radial-gradient(circle at top right, rgba(59, 130, 246, 0.10), transparent 24%),
+    #f8fbff;
   color: var(--color-ink);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+@keyframes float-soft {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 rgba(20, 184, 166, 0.15); }
+  50% { box-shadow: 0 0 28px rgba(20, 184, 166, 0.18); }
+}
+
+.float-soft { animation: float-soft 6s ease-in-out infinite; }
+.pulse-glow { animation: pulse-glow 4s ease-in-out infinite; }
 
 *, *::before, *::after { box-sizing: border-box; }
 

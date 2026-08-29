@@ -8,7 +8,7 @@ const AuthLayout = ({
   title,
   subtitle,
   sideTitle = 'Hire smarter, not harder.',
-  sideText = 'TalentLense parses, ranks, and surfaces your best candidates in seconds — so you can focus on people, not paperwork.',
+  sideText = 'TEEROP parses, ranks, and surfaces your best candidates in seconds — so you can focus on people, not paperwork.',
 }) => {
   return (
     <div className="min-h-screen flex bg-white">
@@ -20,7 +20,7 @@ const AuthLayout = ({
           <div className="h-9 w-9 rounded-xl bg-white/15 backdrop-blur-md border border-white/20 flex items-center justify-center">
             <LensMark size={16} tone="light" />
           </div>
-          <span className="text-lg font-bold tracking-tight">TalentLense</span>
+          <span className="text-lg font-bold tracking-tight">TEEROP</span>
         </Link>
 
         {/* Floating proof cards */}
@@ -55,7 +55,7 @@ const AuthLayout = ({
         <div className="relative z-10 space-y-3">
           <h1 className="text-3xl font-bold leading-tight">{sideTitle}</h1>
           <p className="text-blue-100 text-sm leading-relaxed max-w-sm">{sideText}</p>
-          <p className="pt-6 text-xs text-blue-200/70">© {new Date().getFullYear()} TalentLense Inc. All rights reserved.</p>
+          <p className="pt-6 text-xs text-blue-200/70">© {new Date().getFullYear()} TEEROP. All rights reserved.</p>
         </div>
       </div>
 
@@ -67,7 +67,7 @@ const AuthLayout = ({
               <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center">
                 <LensMark size={16} tone="light" />
               </div>
-              <span className="text-xl font-bold text-slate-900">TalentLense</span>
+              <span className="text-xl font-bold text-slate-900">TEEROP</span>
             </Link>
             <h2 className="text-2xl font-bold text-slate-900 tracking-tight">{title}</h2>
             {subtitle && <p className="mt-2 text-sm text-slate-500">{subtitle}</p>}

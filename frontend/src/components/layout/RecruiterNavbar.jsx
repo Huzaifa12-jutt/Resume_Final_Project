@@ -44,7 +44,7 @@ const RecruiterNavbar = () => {
             <FiBriefcase className="h-5 w-5" />
           </div>
           <div>
-            <span className="font-extrabold text-gray-900 text-lg tracking-tight">TalentLense</span>
+            <span className="font-extrabold text-gray-900 text-lg tracking-tight">TEEROP</span>
             <span className="ml-2 text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-600 border border-indigo-100">
               Recruiter Hub
             </span>

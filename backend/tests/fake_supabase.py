@@ -144,6 +144,7 @@ ALL_TABLES = [
     "users", "companies", "jobs", "candidates", "scores",
     "chat_messages", "system_notifications", "candidate_profiles",
     "applications", "saved_jobs", "recruiter_profiles",
+    "interviews", "interview_questions", "interview_answers",
 ]
 
 

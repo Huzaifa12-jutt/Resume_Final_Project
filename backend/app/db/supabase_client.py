@@ -21,6 +21,9 @@ settings = get_settings()
 
 @lru_cache
 def get_supabase() -> Client:
+    if settings.is_demo_mode():
+        from app.db.demo_supabase import get_demo_supabase
+        return get_demo_supabase()
     if not settings.SUPABASE_URL or not settings.SUPABASE_SERVICE_KEY:
         raise RuntimeError(
             "Supabase is not configured. Set SUPABASE_URL and SUPABASE_SERVICE_KEY "

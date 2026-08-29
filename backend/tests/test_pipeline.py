@@ -148,6 +148,48 @@ def check(label, condition):
         raise SystemExit(1)
 
 
+def test_demo_mode_without_supabase():
+    from app.core.config import Settings
+    settings = Settings()
+    settings.SUPABASE_URL = ""
+    settings.SUPABASE_SERVICE_KEY = ""
+    check("demo mode detects missing Supabase config", settings.is_demo_mode())
+    check("demo mode does not mark health as misconfigured", not settings.validate())
+
+
+def test_interview_flow_demo_mode():
+    import app.services.interview_service as interview_service
+
+    class _FakeChoice:
+        def __init__(self, content):
+            self.message = type("Msg", (), {"content": content})
+
+    class _FakeCompletion:
+        def __init__(self, content):
+            self.choices = [_FakeChoice(content)]
+
+    class _FakeCompletions:
+        def create(self, model, messages, temperature, max_tokens):
+            return _FakeCompletion('[{"question":"Tell me about your experience with product design.","category":"Technical","difficulty":"Medium","model_answer":"I have designed product experiences and iterated with research."}]')
+
+    class _FakeGroqClient:
+        def __init__(self, api_key):
+            self.chat = type("Chat", (), {"completions": _FakeCompletions()})()
+
+    interview_service.Groq = _FakeGroqClient
+    interview_service.settings.GROQ_API_KEY = "fake-key-for-testing"
+
+    db = supabase_client_module.get_supabase()
+    interview_id = interview_service.create_interview(
+        candidate_id="demo-user-1",
+        resume_text="Product-minded engineer with React and TypeScript and UX experience.",
+        job_id="demo-job-1",
+    )
+
+    check("interview row created in demo database", bool(interview_id))
+    check("interview questions were stored", bool(db.table('interview_questions').select('*').eq('interview_id', interview_id).execute().data))
+
+
 def run():
     # 1. Health check
     r = client.get("/health")

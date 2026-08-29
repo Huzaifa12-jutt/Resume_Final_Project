@@ -5,12 +5,54 @@ AI-powered interview simulator service.
 Handles question generation, answer evaluation, and interview management.
 """
 
-from groq import Groq
+try:
+    from groq import Groq
+except Exception:  # pragma: no cover
+    Groq = None
+
 from app.core.config import get_settings
 from app.db.supabase_client import get_supabase
 import json
 
 settings = get_settings()
+
+
+def _generate_demo_questions(resume_text: str, job_description: str = "") -> list:
+    lower_resume = (resume_text or "").lower()
+    base = [
+        {
+            "question": "Walk me through a project or experience that best demonstrates your ability to deliver a polished product experience.",
+            "category": "Experience",
+            "difficulty": "Medium",
+            "model_answer": "Explain the challenge, the user impact, and the concrete decisions you made. Include outcome metrics, collaboration, and how you iterated based on feedback."
+        },
+        {
+            "question": "How do you balance product goals with technical feasibility when shipping a feature?",
+            "category": "Behavioral",
+            "difficulty": "Medium",
+            "model_answer": "Describe how you align on user value, define trade-offs, and validate feasibility with engineering constraints before moving into delivery."
+        },
+    ]
+
+    if any(token in lower_resume for token in ["react", "typescript", "frontend", "ui", "ux", "design"]):
+        base.append({
+            "question": "Tell me about your experience with React, TypeScript, or front-end product implementation and how you handled performance or UX quality.",
+            "category": "Technical",
+            "difficulty": "Medium",
+            "model_answer": "Discuss component architecture, reusable patterns, performance considerations, and how you used user feedback or metrics to improve the experience."
+        })
+
+    if any(token in lower_resume for token in ["python", "sql", "data", "ai", "analytics"]):
+        base.append({
+            "question": "Describe how you use data, SQL, or analytical thinking to improve product or business outcomes.",
+            "category": "Technical",
+            "difficulty": "Medium",
+            "model_answer": "Explain the problem, the metric, the data or query used, the decision taken, and the measurable result."
+        })
+
+    for i, q in enumerate(base):
+        q["id"] = str(i + 1)
+    return base
 
 
 def generate_interview_questions(resume_text: str, job_description: str = "") -> list:
@@ -24,12 +66,15 @@ def generate_interview_questions(resume_text: str, job_description: str = "") ->
     Returns:
         List of question dictionaries with id, question, category, difficulty, model_answer
     """
+    if not settings.has_groq_config() or Groq is None:
+        return _generate_demo_questions(resume_text, job_description)
+
     client = Groq(api_key=settings.GROQ_API_KEY)
-    
+
     job_desc_section = ""
     if job_description:
         job_desc_section = f"Job Description:\n{job_description}\n"
-    
+
     prompt = f"""You are an expert technical interviewer. Based on the following resume, generate 10 personalized interview questions.
 
 Resume Text:
@@ -96,8 +141,17 @@ def evaluate_answer(question: str, model_answer: str, candidate_answer: str) -> 
     Returns:
         Dictionary with score (0-10), feedback, strengths, improvements
     """
+    if not settings.has_groq_config() or Groq is None:
+        score = max(5, min(10, int((len(candidate_answer.split()) / max(1, len(model_answer.split()) // 2)) * 3)))
+        return {
+            "score": score,
+            "feedback": "Strong answer overall. In a live environment, this would be scored by an AI interviewer using your role-specific rubric.",
+            "strengths": ["Clear communication", "Relevant experience discussed", "Good structure"],
+            "improvements": ["Add more measurable outcomes", "Tie examples more directly to the role"],
+        }
+
     client = Groq(api_key=settings.GROQ_API_KEY)
-    
+
     prompt = f"""You are an expert interviewer evaluating a candidate's answer.
 
 Question: {question}
