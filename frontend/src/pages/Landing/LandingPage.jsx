@@ -27,6 +27,7 @@ import {
 } from 'lucide-react';
 import LensMark from '../../components/common/LensMark';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
+import FeaturedJobsCarousel from '../../components/jobs/FeaturedJobsCarousel';
 
 /* ------------------------------------------------------------------ */
 /* Content                                                              */
@@ -329,6 +330,8 @@ export default function LandingPage() {
             ))}
           </div>
         </div>
+
+        <FeaturedJobsCarousel />
 
         {/* Features */}
         <section id="features" className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-teal-50/50 via-indigo-50/30 to-purple-50/50 border-y border-slate-100">

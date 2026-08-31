@@ -2,11 +2,12 @@
 import io, uuid
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from app.db.supabase_client import get_supabase, get_resume_signed_url
-from app.db.models import CompanyUpsert, CandidateProfileUpdate, ApplicationCreate, ApplicationStatusUpdate, RecruiterNotesUpdate, RecruiterJobCreate, RecruiterJobUpdate, AIDescriptionRequest
+from app.db.models import CompanyUpsert, CandidateProfileUpdate, ApplicationCreate, ApplicationStatusUpdate,PublicJobResponse, RecruiterNotesUpdate, RecruiterJobCreate, RecruiterJobUpdate, AIDescriptionRequest
 from app.services.resume_parser import parse_resume
 from app.db.supabase_client import upload_resume_file
 from app.services.ranking_engine import rank_candidates, score_tier
 from app.routers.auth import current_user, require_role
+from uuid import UUID
 
 router = APIRouter(prefix='/ats', tags=['ATS'])
 
@@ -236,6 +237,26 @@ def search_jobs(keyword: str = '', location: str = '', employment_type: str = ''
         text=f"{row.get('title','')} {row.get('description','')} {row.get('experience_required','')}".lower()
         return (not needle or needle in text) and (not experience or experience.lower() in text) and (salary_min is None or float(row.get('salary_max') or 0) >= salary_min)
     return [r for r in rows if matches(r)]
+
+@router.get('/jobs/{job_id}', response_model=PublicJobResponse)
+def public_job_detail(job_id: UUID):
+    result = (
+        get_supabase()
+        .table('jobs')
+        .select(
+            'id, title, description, employment_type, location, '
+            'remote_type, salary_min, salary_max, experience_required, '
+            'education_required, required_skills, openings, status, created_at'
+        )
+        .eq('id', str(job_id))
+        .eq('status', 'active')
+        .execute()
+    )
+
+    if not result.data:
+        raise HTTPException(404, 'Open job not found')
+
+    return result.data[0]
 
 @router.post('/jobs/{job_id}/apply', status_code=201)
 def apply(job_id: str, payload: ApplicationCreate, user=Depends(require_role('candidate'))):

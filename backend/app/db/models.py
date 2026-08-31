@@ -86,6 +86,22 @@ class JobCreate(BaseModel):
     title: str = Field(..., min_length=1, max_length=200)
     description: str = Field(..., min_length=1)
 
+class PublicJobResponse(BaseModel):
+    id: str
+    title: str
+    description: str
+    employment_type: Optional[str] = None
+    location: Optional[str] = None
+    remote_type: Optional[str] = None
+    salary_min: Optional[float] = None
+    salary_max: Optional[float] = None
+    experience_required: Optional[str] = None
+    education_required: Optional[str] = None
+    required_skills: list[str] = []
+    openings: int = 1
+    status: str
+    created_at: Optional[datetime] = None
+
 class RecruiterJobCreate(JobCreate):
     employment_type: Optional[str] = None; location: Optional[str] = None; remote_type: Optional[str] = None
     salary_min: Optional[float] = None; salary_max: Optional[float] = None; experience_required: Optional[str] = None

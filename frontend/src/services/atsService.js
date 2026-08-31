@@ -14,6 +14,8 @@ export const atsService = {
   createRecruiterJob: (payload) => api.post('/ats/recruiter/jobs', payload).then((r) => r.data),
   listRecruiterJobs: () => api.get('/ats/recruiter/jobs').then((r) => r.data),
   getRecruiterJob: (jobId) => api.get(`/ats/recruiter/jobs/${jobId}`).then((r) => r.data),
+  getJob: (jobId) =>
+    api.get(`/ats/jobs/${jobId}`).then((r) => r.data),
   updateRecruiterJob: (jobId, payload) => api.patch(`/ats/recruiter/jobs/${jobId}`, payload).then((r) => r.data),
   deleteRecruiterJob: (jobId) => api.delete(`/ats/recruiter/jobs/${jobId}`),
   listRecruiterCandidates: () => api.get('/ats/recruiter/candidates').then((r) => r.data),
