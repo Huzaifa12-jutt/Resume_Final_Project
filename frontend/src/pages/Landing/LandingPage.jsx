@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { href, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   ArrowRight,
@@ -25,7 +25,6 @@ import {
   UserCheck,
   X,
 } from 'lucide-react';
-import LensMark from '../../components/common/LensMark';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 import FeaturedJobsCarousel from '../../components/jobs/FeaturedJobsCarousel';
 
@@ -35,6 +34,7 @@ import FeaturedJobsCarousel from '../../components/jobs/FeaturedJobsCarousel';
 
 const navLinks = [
   { name: 'Home', href: '#home' },
+  { name: 'Jobs', href: '#jobs' },
   { name: 'Features', href: '#features' },
   { name: 'How It Works', href: '#how-it-works' },
   { name: 'Contact', href: '#contact' },
@@ -64,24 +64,72 @@ const testimonials = [
   { name: 'Priya Nair', role: 'Founder, Stackly', quote: 'We went from a spreadsheet of resumes to a ranked shortlist in minutes. It changed how we hire.' },
 ];
 
-function BrandWordmark({ large = false }) {
+export function TeeropLogo({ large = false }) {
+  // Dynamically scale both the icon and the text based on the 'large' prop
+  const containerClass = large ? 'flex items-center gap-3 sm:gap-4' : 'flex items-center gap-2 sm:gap-2.5';
+  const iconSize = large ? 'w-10 h-10 sm:w-14 sm:h-14 lg:w-16 lg:h-16' : 'w-7 h-7 sm:w-8 sm:h-8';
+  const textSize = large
+    ? 'text-[2.2rem] sm:text-[3.2rem] lg:text-[4.25rem]'
+    : 'text-[1.1rem] sm:text-[1.2rem]';
+
   return (
-    <span
-      className={[
-        'inline-flex items-center select-none font-black leading-none uppercase',
-        large ? 'text-[2.2rem] sm:text-[3rem] lg:text-[4.25rem]' : 'text-[1.1rem] sm:text-[1.2rem]',
-      ].join(' ')}
-      style={{
-        letterSpacing: large ? '-0.075em' : '-0.065em',
-        background: 'linear-gradient(90deg, #06b6d4 0%, #14b8a6 26%, #0ea5e9 48%, #2563eb 100%)',
-        WebkitBackgroundClip: 'text',
-        WebkitTextFillColor: 'transparent',
-        backgroundClip: 'text',
-        textShadow: '0 12px 28px rgba(6, 182, 212, 0.12)',
-      }}
-    >
-      TEEROP
-    </span>
+    <div className={`select-none ${containerClass}`}>
+      {/* Custom SVG Brand Icon */}
+      <svg
+        className={`${iconSize} drop-shadow-md shrink-0`}
+        viewBox="0 0 100 100"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <defs>
+          <linearGradient id="teeropPrimary" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#06b6d4" />   {/* Cyan 500 */}
+            <stop offset="100%" stopColor="#2563eb" /> {/* Blue 600 */}
+          </linearGradient>
+          <linearGradient id="teeropSecondary" x1="0%" y1="100%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#14b8a6" />   {/* Teal 500 */}
+            <stop offset="100%" stopColor="#0ea5e9" /> {/* Sky 500 */}
+          </linearGradient>
+        </defs>
+
+        {/* Outer Hexagon - Represents structured data and process */}
+        <path
+          d="M50 5 L89 27.5 V72.5 L50 95 L11 72.5 V27.5 Z"
+          fill="url(#teeropPrimary)"
+          fillOpacity="0.12"
+        />
+        <path
+          d="M50 5 L89 27.5 V72.5 L50 95 L11 72.5 V27.5 Z"
+          stroke="url(#teeropPrimary)"
+          strokeWidth="6"
+          strokeLinejoin="round"
+        />
+
+        {/* Inner Stylized 'T' - Represents the brand and technical precision */}
+        <path
+          d="M32 32 H68 A 4 4 0 0 1 72 36 V44 A 4 4 0 0 1 68 48 H56 V68 A 4 4 0 0 1 52 72 H48 A 4 4 0 0 1 44 68 V48 H32 A 4 4 0 0 1 28 44 V36 A 4 4 0 0 1 32 32 Z"
+          fill="url(#teeropSecondary)"
+        />
+
+        {/* Core Node - Represents AI intelligence/focus */}
+        <circle cx="50" cy="50" r="4" fill="#ffffff" className="animate-pulse" />
+      </svg>
+
+      {/* Brand Wordmark Typography */}
+      <span
+        className={`font-black leading-none uppercase ${textSize}`}
+        style={{
+          letterSpacing: large ? '-0.065em' : '-0.04em',
+          background: 'linear-gradient(90deg, #06b6d4 0%, #14b8a6 26%, #0ea5e9 48%, #2563eb 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text',
+          textShadow: '0 12px 28px rgba(6, 182, 212, 0.15)',
+        }}
+      >
+        TEEROP
+      </span>
+    </div>
   );
 }
 
@@ -109,7 +157,10 @@ function Navbar() {
           if (entry.isIntersecting) setActive(`#${entry.target.id}`);
         });
       },
-      { rootMargin: '-40% 0px -55% 0px' }
+      {
+        rootMargin: '-20% 0px -50% 0px',
+        threshold: 0,
+      }
     );
     sections.forEach((s) => observer.observe(s));
     return () => observer.disconnect();
@@ -117,21 +168,23 @@ function Navbar() {
 
   const scrollTo = (href) => (e) => {
     e.preventDefault();
-    document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
+
+    setActive(href); // <-- add this
+
+    document.querySelector(href)?.scrollIntoView({
+      behavior: 'smooth',
+    });
+
     setOpen(false);
   };
-
   return (
     <header
       className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/90 backdrop-blur-md border-b border-slate-100 shadow-sm py-3' : 'bg-transparent py-5'
         }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2.5">
-          <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-cyan-500 via-teal-500 to-indigo-600 text-white flex items-center justify-center shadow-lg shadow-cyan-500/20">
-            <LensMark size={16} tone="light" />
-          </div>
-          <BrandWordmark />
+        <Link to="/" className="transition hover:opacity-90">
+          <TeeropLogo />
         </Link>
 
         <nav className="hidden md:flex items-center gap-1">
@@ -204,6 +257,7 @@ export default function LandingPage() {
           <div className="pointer-events-none absolute right-0 top-12 h-80 w-80 rounded-full bg-blue-200/20 blur-3xl" />
 
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-12 gap-12 items-center">
+           {/* LEFT COLUMN: Text and Buttons */}
             <motion.div
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
@@ -215,7 +269,7 @@ export default function LandingPage() {
               </span>
 
               <div className="mt-6">
-                <BrandWordmark large />
+                <TeeropLogo large={true} />
               </div>
 
               <h1 className="mt-5 text-[2.65rem] sm:text-[3.6rem] lg:text-[5rem] font-black text-slate-900 tracking-[-0.07em] leading-[0.9]">
@@ -251,13 +305,19 @@ export default function LandingPage() {
               </div>
             </motion.div>
 
+            {/* RIGHT COLUMN: Animated UI Card */}
             <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.12, duration: 0.6, ease: 'easeOut' }}
+              initial={{ opacity: 0, x: 40 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, ease: 'easeOut' }}
               className="lg:col-span-5 relative"
             >
-              <div className="relative rounded-[2rem] border border-slate-200/80 bg-slate-950 p-5 shadow-[0_30px_80px_rgba(15,23,42,0.18)]">
+              {/* Outer Card Wrapper - Continuous floating animation */}
+              <motion.div 
+                animate={{ y: [0, -12, 0] }}
+                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+                className="relative rounded-[2rem] border border-slate-200/80 bg-slate-950 p-5 shadow-[0_30px_80px_rgba(15,23,42,0.18)]"
+              >
                 <div className="absolute -inset-4 rounded-[2.5rem] bg-gradient-to-br from-cyan-200/20 via-sky-200/10 to-blue-200/20 blur-2xl" />
                 <div className="relative overflow-hidden rounded-[1.6rem] border border-white/10 bg-gradient-to-br from-cyan-500 via-sky-500 to-blue-700 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.25)]">
                   <div className="absolute right-5 top-5 h-3 w-3 rounded-full bg-sky-200 shadow-[0_0_18px_rgba(186,230,253,0.9)]" />
@@ -267,32 +327,62 @@ export default function LandingPage() {
                   <div className="relative flex min-h-[300px] flex-col justify-between">
                     <div className="flex items-center justify-between text-white/90">
                       <span className="text-[10px] font-bold uppercase tracking-[0.26em]">TEEROP</span>
-                      <span className="rounded-full border border-white/20 bg-white/10 px-2 py-1 text-[9px] font-semibold uppercase tracking-[0.18em]">Live</span>
+                      <motion.span 
+                        animate={{ opacity: [1, 0.5, 1] }}
+                        transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                        className="rounded-full border border-white/20 bg-white/10 px-2 py-1 text-[9px] font-semibold uppercase tracking-[0.18em]"
+                      >
+                        Live
+                      </motion.span>
                     </div>
 
-                    <div className="space-y-3 pt-6">
+                    {/* Animated Big Text */}
+                    <motion.div 
+                      initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      transition={{ delay: 0.4, duration: 0.6, ease: 'backOut' }}
+                      className="space-y-3 pt-6"
+                    >
                       <span
                         className="block text-[4.2rem] sm:text-[4.7rem] font-black uppercase leading-none tracking-[-0.08em] text-white drop-shadow-[0_10px_20px_rgba(14,116,144,0.35)]"
                         style={{ textShadow: '0 12px 28px rgba(14, 116, 144, 0.35)' }}
                       >
                         TEEROP
                       </span>
-                    </div>
+                    </motion.div>
 
-                    <div className="rounded-2xl border border-white/20 bg-slate-950/20 p-3 backdrop-blur-sm">
+                    <div className="rounded-2xl border border-white/20 bg-slate-950/20 p-3 backdrop-blur-sm mt-8">
                       <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.22em] text-cyan-50/90">
                         <span>match score</span>
-                        <span>98%</span>
+                        <motion.span
+                           initial={{ opacity: 0 }}
+                           animate={{ opacity: 1 }}
+                           transition={{ delay: 1.6 }}
+                        >
+                          98%
+                        </motion.span>
                       </div>
                       <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/15">
-                        <div className="h-full w-[98%] rounded-full bg-white" />
+                        {/* Animated Progress Bar Fill */}
+                        <motion.div 
+                          initial={{ width: "0%" }}
+                          animate={{ width: "98%" }}
+                          transition={{ delay: 0.8, duration: 1.2, ease: "easeOut" }}
+                          className="h-full rounded-full bg-white" 
+                        />
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <div className="relative mt-4 space-y-3 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
-                  <div className="flex items-center justify-between rounded-xl bg-slate-50 p-3">
+                <div className="relative mt-4 space-y-3 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm overflow-hidden">
+                  {/* Candidate 1 - Slides in */}
+                  <motion.div 
+                    initial={{ opacity: 0, x: 40 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 1.2, duration: 0.5, ease: 'easeOut' }}
+                    className="flex items-center justify-between rounded-xl bg-slate-50 p-3"
+                  >
                     <div className="flex items-center gap-3">
                       <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 text-xs font-bold text-white">#1</span>
                       <div>
@@ -301,9 +391,15 @@ export default function LandingPage() {
                       </div>
                     </div>
                     <span className="text-sm font-extrabold text-cyan-700">96%</span>
-                  </div>
+                  </motion.div>
 
-                  <div className="flex items-center justify-between rounded-xl bg-slate-50 p-3">
+                  {/* Candidate 2 - Slides in slightly after */}
+                  <motion.div 
+                    initial={{ opacity: 0, x: 40 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 1.4, duration: 0.5, ease: 'easeOut' }}
+                    className="flex items-center justify-between rounded-xl bg-slate-50 p-3"
+                  >
                     <div className="flex items-center gap-3">
                       <span className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 text-xs font-bold text-slate-700">#2</span>
                       <div>
@@ -312,9 +408,9 @@ export default function LandingPage() {
                       </div>
                     </div>
                     <span className="text-sm font-extrabold text-slate-700">84%</span>
-                  </div>
+                  </motion.div>
                 </div>
-              </div>
+              </motion.div>
             </motion.div>
           </div>
         </section>
@@ -331,7 +427,9 @@ export default function LandingPage() {
           </div>
         </div>
 
-        <FeaturedJobsCarousel />
+        <section id="jobs" className="scroll-mt-24">
+          <FeaturedJobsCarousel />
+        </section>
 
         {/* Features */}
         <section id="features" className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-teal-50/50 via-indigo-50/30 to-purple-50/50 border-y border-slate-100">
@@ -354,11 +452,10 @@ export default function LandingPage() {
                   transition={{ delay: i * 0.1, duration: 0.4 }}
                   className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-sky-200"
                 >
-                  <div className={`h-11 w-11 rounded-2xl flex items-center justify-center mb-5 ${
-                    i % 3 === 0 ? 'bg-gradient-to-br from-sky-50 to-cyan-100 text-sky-700' :
+                  <div className={`h-11 w-11 rounded-2xl flex items-center justify-center mb-5 ${i % 3 === 0 ? 'bg-gradient-to-br from-sky-50 to-cyan-100 text-sky-700' :
                     i % 3 === 1 ? 'bg-gradient-to-br from-blue-50 to-indigo-100 text-blue-700' :
-                    'bg-gradient-to-br from-cyan-50 to-sky-100 text-sky-700'
-                  }`}>
+                      'bg-gradient-to-br from-cyan-50 to-sky-100 text-sky-700'
+                    }`}>
                     <f.icon size={20} />
                   </div>
                   <h3 className="text-base font-bold text-slate-900 mb-2">{f.title}</h3>
@@ -552,11 +649,8 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
             <div className="col-span-2 md:col-span-1 space-y-3">
-              <div className="flex items-center gap-2 text-white font-bold text-lg">
-                <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-cyan-500 via-teal-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
-                  <LensMark size={14} tone="light" />
-                </div>
-                <BrandWordmark />
+              <div className="flex items-center text-white font-bold text-lg">
+                <TeeropLogo />
               </div>
               <p className="text-xs leading-relaxed">AI-powered applicant tracking for modern hiring teams.</p>
             </div>

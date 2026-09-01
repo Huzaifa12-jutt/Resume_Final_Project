@@ -1,221 +1,708 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { ArrowRight, BriefcaseBusiness, Building2, Clock3, DollarSign, MapPin, Search, Sparkles, Star, Users } from 'lucide-react';
-import toast from 'react-hot-toast';
+import { Link } from 'react-router-dom';
+import {
+  ArrowRight,
+  BriefcaseBusiness,
+  Building2,
+  CheckCircle2,
+  Clock3,
+  DollarSign,
+  MapPin,
+  Search,
+  Sparkles,
+  Users,
+  X,
+} from 'lucide-react';
+
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 import { atsService } from '../../services/atsService';
-import { useAuth } from '../../contexts/AuthContext';
 
 const money = (value) => {
-  if (value === null || value === undefined || value === '') return 'Competitive';
+  if (value === null || value === undefined || value === '') {
+    return null;
+  }
+
+  const numericValue = Number(value);
+
+  if (Number.isNaN(numericValue)) {
+    return null;
+  }
+
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
     maximumFractionDigits: 0,
-  }).format(Number(value));
+  }).format(numericValue);
+};
+
+const formatSalary = (min, max) => {
+  const minimum = money(min);
+  const maximum = money(max);
+
+  if (minimum && maximum) {
+    return `${minimum} – ${maximum}`;
+  }
+
+  if (minimum) {
+    return `From ${minimum}`;
+  }
+
+  if (maximum) {
+    return `Up to ${maximum}`;
+  }
+
+  return 'Competitive';
+};
+
+const formatDate = (date) => {
+  if (!date) return 'Recently posted';
+
+  const parsed = new Date(date);
+
+  if (Number.isNaN(parsed.getTime())) {
+    return 'Recently posted';
+  }
+
+  return parsed.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
 };
 
 export default function PublicJobsPage() {
-  useDocumentTitle('Jobs');
-  const { user } = useAuth();
-  const navigate = useNavigate();
+  useDocumentTitle('Find Jobs');
+
   const [jobs, setJobs] = useState([]);
   const [query, setQuery] = useState('');
   const [location, setLocation] = useState('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const load = async () => {
+    let mounted = true;
+
+    const loadJobs = async () => {
       try {
-        const rows = await atsService.searchJobs({ keyword: '' });
-        setJobs(Array.isArray(rows) ? rows : []);
-      } catch {
-        setJobs([]);
+        const rows = await atsService.searchJobs({
+          keyword: '',
+          status: 'active',
+        });
+
+        if (mounted) {
+          setJobs(Array.isArray(rows) ? rows : []);
+        }
+      } catch (error) {
+        console.error('Failed to load public jobs:', error);
+
+        if (mounted) {
+          setJobs([]);
+        }
       } finally {
-        setLoading(false);
+        if (mounted) {
+          setLoading(false);
+        }
       }
     };
-    load();
+
+    loadJobs();
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   const filteredJobs = useMemo(() => {
     const search = query.trim().toLowerCase();
+    const locationSearch = location.trim().toLowerCase();
+
     return jobs.filter((job) => {
-      const haystack = `${job.title || ''} ${job.description || ''} ${job.location || ''} ${job.required_skills?.join(' ') || ''}`.toLowerCase();
-      const matchesSearch = !search || haystack.includes(search);
-      const matchesLocation = !location || (job.location || 'Remote').toLowerCase().includes(location.toLowerCase());
+      const skills = Array.isArray(job.required_skills)
+        ? job.required_skills.join(' ')
+        : '';
+
+      const searchableText = `
+        ${job.title || ''}
+        ${job.description || ''}
+        ${job.location || ''}
+        ${job.employment_type || ''}
+        ${job.remote_type || ''}
+        ${job.experience_required || ''}
+        ${job.education_required || ''}
+        ${skills}
+      `.toLowerCase();
+
+      const matchesSearch =
+        !search || searchableText.includes(search);
+
+      const jobLocation = (
+        job.location ||
+        job.remote_type ||
+        'Remote'
+      ).toLowerCase();
+
+      const matchesLocation =
+        !locationSearch || jobLocation.includes(locationSearch);
+
       return matchesSearch && matchesLocation;
     });
-  }, [jobs, location, query]);
+  }, [jobs, query, location]);
+
+  const clearFilters = () => {
+    setQuery('');
+    setLocation('');
+  };
+
+  const hasFilters = query.trim() || location.trim();
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_#e0f2fe,_#f8fafc_35%,_#f8fafc)] text-slate-900">
-      <header className="border-b border-slate-200 bg-white/90 backdrop-blur-xl">
+    <div className="min-h-screen bg-slate-50 text-slate-900">
+      {/* =========================================================
+          HEADER
+      ========================================================== */}
+      <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/85 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-          <Link to="/" className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-600 to-indigo-600 text-white shadow-lg shadow-indigo-200/50">
+          {/* Brand */}
+          <Link
+            to="/"
+            className="group flex items-center gap-3"
+          >
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-600 to-indigo-600 text-white shadow-lg shadow-indigo-200/50 transition duration-300 group-hover:scale-105">
               <Sparkles size={18} />
             </div>
+
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.25em] text-indigo-600">TalentLense</p>
-              <p className="text-sm font-semibold text-slate-900">Public Jobs</p>
+              <p className="text-xs font-bold uppercase tracking-[0.25em] text-indigo-600">
+                TalentLense
+              </p>
+
+              <p className="text-sm font-semibold text-slate-900">
+                Career opportunities
+              </p>
             </div>
           </Link>
 
-          <div className="hidden items-center gap-3 md:flex">
-            <Link to="/profiles" className="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-100 hover:text-slate-900">Profiles</Link>
-            <Link to="/login" className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50">Login</Link>
-            <Link to="/register" className="rounded-full bg-gradient-to-r from-teal-600 to-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-indigo-200">Join now</Link>
-          </div>
+          {/* Navigation */}
+          <nav className="hidden items-center gap-2 md:flex">
+            <Link
+              to="/jobs"
+              className="rounded-full bg-indigo-50 px-4 py-2 text-sm font-semibold text-indigo-700"
+            >
+              Jobs
+            </Link>
+
+            <Link
+              to="/login"
+              className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
+            >
+              Login
+            </Link>
+
+            <Link
+              to="/register"
+              className="rounded-full bg-gradient-to-r from-teal-600 to-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-200/50 transition hover:-translate-y-0.5 hover:shadow-xl"
+            >
+              Create account
+            </Link>
+          </nav>
+
+          {/* Mobile login */}
+          <Link
+            to="/login"
+            className="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 md:hidden"
+          >
+            Login
+          </Link>
         </div>
       </header>
 
-      <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-        <section className="rounded-[2rem] border border-indigo-100 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 p-8 text-white shadow-2xl shadow-indigo-200/40 sm:p-10">
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-            <div className="max-w-2xl">
-              <p className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-indigo-100">
-                <BriefcaseBusiness size={12} /> Open roles
+      {/* =========================================================
+          MAIN
+      ========================================================== */}
+      <main>
+        {/* =======================================================
+            HERO
+        ======================================================== */}
+        <section className="relative overflow-hidden border-b border-slate-200 bg-white">
+          {/* Decorative background */}
+          <div className="pointer-events-none absolute -left-32 -top-32 h-80 w-80 rounded-full bg-indigo-200/30 blur-3xl" />
+          <div className="pointer-events-none absolute -right-32 top-20 h-96 w-96 rounded-full bg-teal-200/30 blur-3xl" />
+
+          <div className="relative mx-auto max-w-7xl px-4 pb-14 pt-12 sm:px-6 sm:pt-16 lg:px-8 lg:pb-20">
+            <div className="grid items-center gap-10 lg:grid-cols-[1fr_auto]">
+              <div className="max-w-3xl">
+                {/* Eyebrow */}
+                <div className="inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-indigo-50 px-3.5 py-2 text-xs font-bold uppercase tracking-[0.2em] text-indigo-700">
+                  <BriefcaseBusiness size={13} />
+                  Explore open positions
+                </div>
+
+                {/* Heading */}
+                <h1 className="mt-6 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl lg:text-6xl">
+                  Find work that
+                  <span className="block bg-gradient-to-r from-teal-600 via-indigo-600 to-violet-600 bg-clip-text text-transparent">
+                    fits your future.
+                  </span>
+                </h1>
+
+                <p className="mt-5 max-w-2xl text-base leading-7 text-slate-600 sm:text-lg">
+                  Discover open roles from companies looking for talented
+                  people. Explore the opportunity first, then apply when
+                  you are ready.
+                </p>
+
+                {/* Quick stats */}
+                <div className="mt-8 flex flex-wrap gap-3">
+                  <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-600 shadow-sm">
+                    <BriefcaseBusiness
+                      size={15}
+                      className="text-indigo-600"
+                    />
+                    <span>
+                      <strong className="text-slate-900">
+                        {jobs.length}
+                      </strong>{' '}
+                      active jobs
+                    </span>
+                  </div>
+
+                  <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-600 shadow-sm">
+                    <Sparkles
+                      size={15}
+                      className="text-teal-600"
+                    />
+                    AI-powered screening
+                  </div>
+                </div>
+              </div>
+
+              {/* Hero side card */}
+              <div className="hidden w-72 rounded-[2rem] border border-slate-200 bg-white p-6 shadow-[0_25px_70px_rgba(15,23,42,0.10)] lg:block">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-100 to-indigo-100 text-indigo-700">
+                  <Sparkles size={22} />
+                </div>
+
+                <h2 className="mt-5 text-lg font-bold text-slate-950">
+                  Smarter applications
+                </h2>
+
+                <p className="mt-2 text-sm leading-6 text-slate-500">
+                  Build your candidate profile once and use it across the
+                  opportunities you are interested in.
+                </p>
+
+                <div className="mt-5 space-y-3">
+                  <div className="flex items-center gap-2 text-sm text-slate-600">
+                    <CheckCircle2
+                      size={16}
+                      className="text-emerald-500"
+                    />
+                    Resume-based screening
+                  </div>
+
+                  <div className="flex items-center gap-2 text-sm text-slate-600">
+                    <CheckCircle2
+                      size={16}
+                      className="text-emerald-500"
+                    />
+                    Candidate profile
+                  </div>
+
+                  <div className="flex items-center gap-2 text-sm text-slate-600">
+                    <CheckCircle2
+                      size={16}
+                      className="text-emerald-500"
+                    />
+                    Application tracking
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* =======================================================
+            SEARCH
+        ======================================================== */}
+        <section className="relative z-10 mx-auto -mt-6 max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="rounded-[1.75rem] border border-slate-200 bg-white p-3 shadow-[0_20px_60px_rgba(15,23,42,0.10)]">
+            <div className="grid gap-3 md:grid-cols-[1fr_0.55fr_auto]">
+              {/* Search */}
+              <div className="relative">
+                <Search
+                  size={18}
+                  className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                />
+
+                <input
+                  type="text"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Search by job title, skill, or keyword"
+                  className="h-12 w-full rounded-2xl border border-transparent bg-slate-50 pl-12 pr-4 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-200 focus:bg-white focus:ring-4 focus:ring-indigo-500/10"
+                />
+              </div>
+
+              {/* Location */}
+              <div className="relative">
+                <MapPin
+                  size={17}
+                  className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+                />
+
+                <input
+                  type="text"
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                  placeholder="Location"
+                  className="h-12 w-full rounded-2xl border border-transparent bg-slate-50 pl-11 pr-4 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-200 focus:bg-white focus:ring-4 focus:ring-indigo-500/10"
+                />
+              </div>
+
+              {/* Clear */}
+              {hasFilters ? (
+                <button
+                  type="button"
+                  onClick={clearFilters}
+                  className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
+                >
+                  <X size={16} />
+                  Clear
+                </button>
+              ) : (
+                <div className="hidden h-12 items-center justify-center rounded-2xl bg-gradient-to-r from-teal-600 to-indigo-600 px-6 text-sm font-semibold text-white md:flex">
+                  Find jobs
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {/* =======================================================
+            JOBS
+        ======================================================== */}
+        <section className="mx-auto max-w-7xl px-4 pb-16 pt-12 sm:px-6 lg:px-8">
+          {/* Section heading */}
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.24em] text-indigo-600">
+                Opportunities
               </p>
-              <h1 className="mt-4 text-3xl font-black tracking-tight text-white sm:text-5xl">Find a role that fits your next chapter.</h1>
-              <p className="mt-4 max-w-xl text-sm text-slate-200 sm:text-base">Explore modern opportunities, compare teams, and apply with a profile that is already ready for AI screening.</p>
+
+              <h2 className="mt-2 text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">
+                Latest open positions
+              </h2>
+
+              <p className="mt-2 text-sm text-slate-500">
+                {loading
+                  ? 'Loading available opportunities...'
+                  : `${filteredJobs.length} position${
+                      filteredJobs.length === 1 ? '' : 's'
+                    } available`}
+              </p>
             </div>
 
-            <div className="grid gap-3 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-slate-200 sm:grid-cols-3 lg:min-w-[360px]">
-              <div>
-                <p className="text-indigo-200">Jobs live</p>
-                <p className="mt-1 text-2xl font-bold text-white">{jobs.length}</p>
-              </div>
-              <div>
-                <p className="text-indigo-200">Fast apply</p>
-                <p className="mt-1 text-2xl font-bold text-white">24h</p>
-              </div>
-              <div>
-                <p className="text-indigo-200">AI-ranked</p>
-                <p className="mt-1 text-2xl font-bold text-white">1-click</p>
-              </div>
-            </div>
+            {!loading && hasFilters && (
+              <button
+                type="button"
+                onClick={clearFilters}
+                className="text-sm font-semibold text-indigo-600 hover:text-indigo-700"
+              >
+                Clear filters
+              </button>
+            )}
           </div>
-        </section>
 
-        <section className="mt-8 rounded-3xl border border-slate-200 bg-white p-4 shadow-[0_20px_50px_rgba(15,23,42,0.08)] sm:p-6">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-            <div className="relative flex-1">
-              <Search className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-              <input
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search by title, skill, or role type"
-                className="w-full rounded-2xl border border-slate-200 bg-slate-50 py-3 pl-12 pr-4 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-500/10"
-              />
-            </div>
-            <div className="relative lg:max-w-xs">
-              <MapPin className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-              <input
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                placeholder="Location"
-                className="w-full rounded-2xl border border-slate-200 bg-slate-50 py-3 pl-11 pr-4 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-500/10"
-              />
-            </div>
-          </div>
-        </section>
+          {/* Loading */}
+          {loading ? (
+            <div className="mt-8 grid gap-5 md:grid-cols-2">
+              {Array.from({ length: 6 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white"
+                >
+                  <div className="h-2 animate-pulse bg-slate-200" />
 
-        {loading ? (
-          <div className="mt-8 grid gap-4 md:grid-cols-2">
-            {Array.from({ length: 4 }).map((_, index) => (
-              <div key={index} className="h-64 animate-pulse rounded-3xl border border-slate-200 bg-slate-100" />
-            ))}
-          </div>
-        ) : filteredJobs.length === 0 ? (
-          <div className="mt-10 rounded-3xl border border-dashed border-slate-300 bg-white p-12 text-center">
-            <BriefcaseBusiness className="mx-auto text-slate-400" size={42} />
-            <h2 className="mt-4 text-xl font-bold text-slate-900">No roles match your filters</h2>
-            <p className="mt-2 text-sm text-slate-500">Try another search term or clear the location filter.</p>
-          </div>
-        ) : (
-          <section className="mt-8 grid gap-5 lg:grid-cols-2">
-            {filteredJobs.map((job) => (
-              <article key={job.id} className="group rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-[0_20px_50px_rgba(15,23,42,0.05)] transition hover:-translate-y-1 hover:border-indigo-200 hover:shadow-[0_22px_60px_rgba(79,70,229,0.12)]">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-100 to-teal-100 text-indigo-700">
-                      <Building2 size={20} />
+                  <div className="p-6">
+                    <div className="flex gap-4">
+                      <div className="h-12 w-12 animate-pulse rounded-2xl bg-slate-200" />
+
+                      <div className="flex-1">
+                        <div className="h-4 w-32 animate-pulse rounded bg-slate-200" />
+                        <div className="mt-3 h-6 w-48 animate-pulse rounded bg-slate-200" />
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-sm font-medium text-slate-500">{job.company_name || 'TalentLense Hiring Team'}</p>
-                      <h2 className="text-xl font-bold text-slate-950">{job.title}</h2>
+
+                    <div className="mt-6 h-20 animate-pulse rounded-2xl bg-slate-100" />
+
+                    <div className="mt-5 flex gap-2">
+                      <div className="h-7 w-20 animate-pulse rounded-full bg-slate-100" />
+                      <div className="h-7 w-24 animate-pulse rounded-full bg-slate-100" />
+                      <div className="h-7 w-16 animate-pulse rounded-full bg-slate-100" />
                     </div>
-                  </div>
-                  <span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">{job.status || 'Active'}</span>
-                </div>
 
-                <div className="mt-4 flex flex-wrap gap-2 text-xs text-slate-600">
-                  <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1.5"><MapPin size={12} /> {job.location || 'Remote'}</span>
-                  <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1.5"><Clock3 size={12} /> {job.employment_type || 'Full-time'}</span>
-                  <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1.5"><DollarSign size={12} /> {money(job.salary_min)} - {money(job.salary_max)}</span>
-                </div>
+                    <div className="mt-6 h-px bg-slate-100" />
 
-                <p className="mt-4 line-clamp-4 text-sm leading-7 text-slate-600">{job.description}</p>
-
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {(job.required_skills || ['Product','AI','Collaboration']).slice(0, 5).map((skill) => (
-                    <span key={skill} className="rounded-full bg-indigo-50 px-2.5 py-1 text-[11px] font-semibold text-indigo-700">{skill}</span>
-                  ))}
-                </div>
-
-                <div className="mt-6 flex items-center justify-between gap-3 border-t border-slate-100 pt-4">
-                  <div className="flex items-center gap-2 text-sm text-slate-500">
-                    <Users size={16} className="text-indigo-500" />
-                    {job.openings || 1} open role{(job.openings || 1) > 1 ? 's' : ''}
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Link to={`/jobs/${job.id}`} className="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50">View details</Link>
-                    <button
-                      onClick={() => {
-                        if (!user) {
-                          navigate('/login', { state: { from: { pathname: `/jobs/${job.id}` } } });
-                          return;
-                        }
-                        if (user.role !== 'candidate') {
-                          toast.error('Please sign in as a candidate to apply to jobs.');
-                          return;
-                        }
-                        navigate(`/jobs/${job.id}`);
-                      }}
-                      className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-teal-600 to-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-indigo-200 transition hover:shadow-xl"
-                    >
-                      Apply now <ArrowRight size={15} />
-                    </button>
+                    <div className="mt-5 h-10 animate-pulse rounded-full bg-slate-100" />
                   </div>
                 </div>
-              </article>
-            ))}
-          </section>
-        )}
+              ))}
+            </div>
+          ) : filteredJobs.length === 0 ? (
+            /* Empty state */
+            <div className="mt-8 rounded-[2rem] border border-dashed border-slate-300 bg-white px-6 py-16 text-center shadow-sm">
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-3xl bg-slate-100 text-slate-400">
+                <BriefcaseBusiness size={28} />
+              </div>
 
-        <section className="mt-12 rounded-3xl border border-dashed border-indigo-200 bg-gradient-to-r from-indigo-50 to-teal-50 p-6 text-center shadow-sm">
-          <p className="text-xs font-bold uppercase tracking-[0.26em] text-indigo-600">Why candidates love it</p>
-          <h3 className="mt-3 text-2xl font-bold text-slate-900">Application flow that feels premium and fast.</h3>
-          <div className="mt-5 grid gap-4 md:grid-cols-3">
-            <div className="rounded-2xl bg-white p-4 shadow-sm">
-              <Star className="mx-auto text-amber-500" size={22} />
-              <p className="mt-2 font-semibold text-slate-900">AI-matched roles</p>
-              <p className="mt-1 text-sm text-slate-500">Your resume is screened against the job description in a single flow.</p>
+              <h3 className="mt-5 text-xl font-bold text-slate-950">
+                No jobs found
+              </h3>
+
+              <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-500">
+                We could not find any positions matching your current
+                search. Try a different keyword or location.
+              </p>
+
+              {hasFilters && (
+                <button
+                  type="button"
+                  onClick={clearFilters}
+                  className="mt-6 rounded-full bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800"
+                >
+                  Clear filters
+                </button>
+              )}
             </div>
-            <div className="rounded-2xl bg-white p-4 shadow-sm">
-              <Sparkles className="mx-auto text-pink-500" size={22} />
-              <p className="mt-2 font-semibold text-slate-900">Faster shortlist</p>
-              <p className="mt-1 text-sm text-slate-500">Design-led experience keeps candidates engaged instead of confused.</p>
+          ) : (
+            /* Job cards */
+            <div className="mt-8 grid gap-5 lg:grid-cols-2">
+              {filteredJobs.map((job) => {
+                const skills = Array.isArray(job.required_skills)
+                  ? job.required_skills
+                  : [];
+
+                const openings = Number(job.openings) || 1;
+
+                return (
+                  <article
+                    key={job.id}
+                    className="group relative flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white shadow-[0_15px_45px_rgba(15,23,42,0.05)] transition duration-300 hover:-translate-y-1 hover:border-indigo-200 hover:shadow-[0_25px_65px_rgba(79,70,229,0.12)]"
+                  >
+                    {/* Top accent */}
+                    <div className="h-1 bg-gradient-to-r from-teal-500 via-indigo-500 to-violet-500 opacity-80 transition group-hover:opacity-100" />
+
+                    <div className="flex flex-1 flex-col p-6">
+                      {/* Job header */}
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex min-w-0 items-start gap-4">
+                          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-100 to-teal-100 text-indigo-700 transition duration-300 group-hover:scale-105">
+                            <Building2 size={20} />
+                          </div>
+
+                          <div className="min-w-0">
+                            <p className="truncate text-xs font-semibold uppercase tracking-wide text-slate-500">
+                              {job.company_name ||
+                                'TalentLense Hiring Team'}
+                            </p>
+
+                            <h3 className="mt-1 line-clamp-2 text-xl font-bold leading-tight text-slate-950">
+                              {job.title}
+                            </h3>
+                          </div>
+                        </div>
+
+                        <span className="shrink-0 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-emerald-700">
+                          {job.status || 'Active'}
+                        </span>
+                      </div>
+
+                      {/* Meta information */}
+                      <div className="mt-5 grid gap-2 sm:grid-cols-2">
+                        <div className="flex items-center gap-2 rounded-xl bg-slate-50 px-3 py-2.5 text-xs font-medium text-slate-600">
+                          <MapPin
+                            size={14}
+                            className="shrink-0 text-indigo-500"
+                          />
+                          <span className="truncate">
+                            {job.location ||
+                              job.remote_type ||
+                              'Remote'}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-2 rounded-xl bg-slate-50 px-3 py-2.5 text-xs font-medium text-slate-600">
+                          <Clock3
+                            size={14}
+                            className="shrink-0 text-indigo-500"
+                          />
+                          <span className="truncate">
+                            {job.employment_type || 'Full-time'}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-2 rounded-xl bg-slate-50 px-3 py-2.5 text-xs font-medium text-slate-600">
+                          <DollarSign
+                            size={14}
+                            className="shrink-0 text-emerald-500"
+                          />
+                          <span className="truncate">
+                            {formatSalary(
+                              job.salary_min,
+                              job.salary_max
+                            )}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-2 rounded-xl bg-slate-50 px-3 py-2.5 text-xs font-medium text-slate-600">
+                          <Users
+                            size={14}
+                            className="shrink-0 text-indigo-500"
+                          />
+                          <span>
+                            {openings} open
+                            {openings > 1 ? 'ings' : 'ing'}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Description */}
+                      <div className="mt-5">
+                        <p className="line-clamp-3 text-sm leading-7 text-slate-600">
+                          {job.description ||
+                            'No job description available.'}
+                        </p>
+                      </div>
+
+                      {/* Skills */}
+                      <div className="mt-5 min-h-[34px]">
+                        {skills.length > 0 ? (
+                          <div className="flex flex-wrap gap-2">
+                            {skills.slice(0, 5).map((skill, index) => (
+                              <span
+                                key={`${skill}-${index}`}
+                                className="rounded-full border border-indigo-100 bg-indigo-50 px-3 py-1 text-[11px] font-semibold text-indigo-700"
+                              >
+                                {skill}
+                              </span>
+                            ))}
+
+                            {skills.length > 5 && (
+                              <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-[11px] font-semibold text-slate-500">
+                                +{skills.length - 5} more
+                              </span>
+                            )}
+                          </div>
+                        ) : (
+                          <span className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-[11px] font-semibold text-slate-500">
+                            Skills not specified
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Bottom area */}
+                      <div className="mt-auto pt-6">
+                        <div className="flex items-center justify-between gap-4 border-t border-slate-100 pt-5">
+                          <div>
+                            <p className="text-[11px] font-medium uppercase tracking-wide text-slate-400">
+                              Posted
+                            </p>
+
+                            <p className="mt-1 text-xs font-semibold text-slate-600">
+                              {formatDate(job.created_at)}
+                            </p>
+                          </div>
+
+                          {/* IMPORTANT:
+                              No Apply button here.
+                              User must open the full job page first.
+                          */}
+                          <Link
+                            to={`/jobs/${job.id}`}
+                            className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-teal-600 to-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-200/40 transition duration-300 hover:-translate-y-0.5 hover:shadow-xl"
+                          >
+                            View details
+                            <ArrowRight
+                              size={15}
+                              className="transition-transform duration-300 group-hover:translate-x-0.5"
+                            />
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  </article>
+                );
+              })}
             </div>
-            <div className="rounded-2xl bg-white p-4 shadow-sm">
-              <Building2 className="mx-auto text-emerald-500" size={22} />
-              <p className="mt-2 font-semibold text-slate-900">Transparent pipeline</p>
-              <p className="mt-1 text-sm text-slate-500">A cleaner story from job view to application to interview and feedback.</p>
-            </div>
-          </div>
+          )}
+
+          {/* =====================================================
+              BOTTOM CTA
+          ====================================================== */}
+          {!loading && filteredJobs.length > 0 && (
+            <section className="mt-12 overflow-hidden rounded-[2rem] border border-indigo-100 bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-950 p-8 text-white shadow-[0_25px_70px_rgba(15,23,42,0.15)] sm:p-10">
+              <div className="flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
+                <div className="max-w-2xl">
+                  <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-indigo-200">
+                    <Sparkles size={13} />
+                    TalentLense
+                  </div>
+
+                  <h2 className="mt-4 text-2xl font-bold tracking-tight sm:text-3xl">
+                    Ready to take the next step?
+                  </h2>
+
+                  <p className="mt-3 text-sm leading-6 text-slate-300 sm:text-base">
+                    Create your candidate profile, upload your resume,
+                    and be ready to apply when you find the right role.
+                  </p>
+                </div>
+
+                <Link
+                  to="/register"
+                  className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-bold text-slate-950 transition hover:-translate-y-0.5 hover:bg-slate-100"
+                >
+                  Create candidate profile
+                  <ArrowRight size={16} />
+                </Link>
+              </div>
+            </section>
+          )}
         </section>
       </main>
+
+      {/* =========================================================
+          FOOTER
+      ========================================================== */}
+      <footer className="border-t border-slate-200 bg-white">
+        <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-8 text-sm text-slate-500 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
+          <div>
+            <p className="font-semibold text-slate-800">
+              TalentLense
+            </p>
+
+            <p className="mt-1">
+              AI-powered resume screening and candidate matching.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-5">
+            <Link
+              to="/jobs"
+              className="transition hover:text-indigo-600"
+            >
+              Jobs
+            </Link>
+
+
+            <Link
+              to="/login"
+              className="transition hover:text-indigo-600"
+            >
+              Login
+            </Link>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

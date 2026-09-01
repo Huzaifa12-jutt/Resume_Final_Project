@@ -9,6 +9,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import atsService from '../../services/atsService';
+import { Link } from 'react-router-dom';
 
 export default function FeaturedJobsCarousel() {
   const navigate = useNavigate();
@@ -124,13 +125,12 @@ export default function FeaturedJobsCarousel() {
                 return (
                   <div
                     key={job.id}
-                    className={`absolute inset-0 p-7 md:p-10 transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-                      isActive
+                    className={`absolute inset-0 p-7 md:p-10 transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${isActive
                         ? 'translate-x-0 opacity-100'
                         : index < currentIndex
                           ? '-translate-x-full opacity-0'
                           : 'translate-x-full opacity-0'
-                    }`}
+                      }`}
                   >
 
                     {/* Card content */}
@@ -293,11 +293,10 @@ export default function FeaturedJobsCarousel() {
                   type="button"
                   onClick={() => setCurrentIndex(index)}
                   aria-label={`Show ${job.title}`}
-                  className={`h-1.5 rounded-full transition-all duration-500 ${
-                    index === currentIndex
+                  className={`h-1.5 rounded-full transition-all duration-500 ${index === currentIndex
                       ? 'w-8 bg-teal-700'
                       : 'w-2 bg-slate-300 hover:bg-slate-400'
-                  }`}
+                    }`}
                 />
               ))}
 
@@ -311,6 +310,17 @@ export default function FeaturedJobsCarousel() {
             </p>
           )}
 
+
+        </div>
+        {/* View all jobs */}
+        <div className="mt-8 flex justify-center">
+          <Link
+            to="/jobs"
+            className="inline-flex items-center gap-2 rounded-full bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700"
+          >
+            View all jobs
+            <ArrowRight size={15} />
+          </Link>
         </div>
       </div>
     </section>
