@@ -134,14 +134,22 @@ def recruiter_job_detail(job_id: str, user=Depends(require_role('recruiter'))):
     supabase = get_supabase()
     candidates_result = supabase.table("candidates").select("*, scores(*)").eq("job_id", job_id).execute()
 
+    candidates_data = candidates_result.data or []
+    cand_ids = [c["id"] for c in candidates_data]
+    app_map = {}
+    if cand_ids:
+        app_rows = supabase.table('applications').select('id, candidate_resume_id').in_('candidate_resume_id', cand_ids).execute().data or []
+        app_map = {a['candidate_resume_id']: a['id'] for a in app_rows if a.get('candidate_resume_id')}
+
     ranked_response = []
-    for c in candidates_result.data or []:
+    for c in candidates_data:
         scores_list = c.get("scores") or []
         s = scores_list[0] if scores_list else {}
 
         ranked_response.append({
             "candidate_id": c["id"],
             "id": c["id"],
+            "application_id": app_map.get(c["id"]),
             "filename": c.get("filename"),
             "name": c.get("name"),
             "email": c.get("email"),
@@ -195,6 +203,12 @@ def recruiter_all_candidates(user=Depends(require_role('recruiter'))):
             .execute().data or []
         job_map={}
     
+    cand_ids = [c['id'] for c in candidates]
+    app_map = {}
+    if cand_ids:
+        app_rows = db.table('applications').select('id, candidate_resume_id').in_('candidate_resume_id', cand_ids).execute().data or []
+        app_map = {a['candidate_resume_id']: a['id'] for a in app_rows if a.get('candidate_resume_id')}
+
     result=[]
     for c in candidates:
         scores_list=c.get('scores') or []
@@ -206,6 +220,7 @@ def recruiter_all_candidates(user=Depends(require_role('recruiter'))):
         result.append({
             'id':c['id'],
             'candidate_id':c['id'],
+            'application_id': app_map.get(c['id']),
             'name':c.get('name'),
             'email':c.get('email'),
             'phone':c.get('phone'),

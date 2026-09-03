@@ -13,11 +13,13 @@ import {
 } from 'react-icons/fi';
 import useAuth from '../../hooks/useAuth';
 import useNotifications from '../../hooks/useNotifications';
+import useMessagingUnread from '../../hooks/useMessagingUnread';
 import NotificationDrawer from './NotificationDrawer';
 
 const CandidateNavbar = () => {
   const { user, logout } = useAuth();
   const { unreadCount } = useNotifications();
+  const { unreadCount: msgUnreadCount } = useMessagingUnread();
   const navigate = useNavigate();
 
   const [profileOpen, setProfileOpen] = useState(false);
@@ -27,6 +29,7 @@ const CandidateNavbar = () => {
     { to: '/candidate', icon: FiGrid, label: 'Dashboard', end: true },
     { to: '/candidate/jobs', icon: FiSearch, label: 'Browse Jobs' },
     { to: '/candidate/applications', icon: FiFileText, label: 'Applications' },
+    { to: '/candidate/messages', icon: FiMessageSquare, label: 'Messages', badge: msgUnreadCount },
     { to: '/candidate/profile', icon: FiUser, label: 'Resume' },
   ];
 
@@ -39,7 +42,7 @@ const CandidateNavbar = () => {
             <FiBriefcase className="h-5 w-5" />
           </div>
           <div>
-            <span className="font-extrabold text-gray-900 text-lg tracking-tight">TalentLense</span>
+            <span className="font-extrabold text-gray-900 text-lg tracking-tight">TEEROP</span>
             <span className="ml-2 text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">
               Candidate Portal
             </span>
@@ -56,7 +59,7 @@ const CandidateNavbar = () => {
                 to={link.to}
                 end={link.end}
                 className={({ isActive }) =>
-                  `flex items-center space-x-2 px-3.5 py-2 rounded-xl text-sm font-semibold transition-all ${
+                  `relative flex items-center space-x-2 px-3.5 py-2 rounded-xl text-sm font-semibold transition-all ${
                     isActive
                       ? 'bg-indigo-50 text-indigo-600'
                       : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
@@ -65,6 +68,11 @@ const CandidateNavbar = () => {
               >
                 <Icon className="h-4 w-4" />
                 <span>{link.label}</span>
+                {link.badge > 0 && (
+                  <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white ml-0.5">
+                    {link.badge > 9 ? '9+' : link.badge}
+                  </span>
+                )}
               </NavLink>
             );
           })}

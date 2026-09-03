@@ -12,6 +12,7 @@ export default function RoleShell({ title, subtitle, children, role }) {
       { to: '/recruiter', label: 'Overview', icon: LayoutDashboard },
       { to: '/recruiter/jobs', label: 'Jobs', icon: BriefcaseBusiness },
       { to: '/recruiter/candidates', label: 'Candidates', icon: Users },
+      { to: '/recruiter/messages', label: 'Messages', icon: MessageSquareText },
       { to: '/recruiter/analytics', label: 'Analytics', icon: Search },
       { to: '/recruiter/company', label: 'Company', icon: Building2 },
       { to: '/recruiter/settings', label: 'Settings', icon: Settings },
@@ -20,7 +21,8 @@ export default function RoleShell({ title, subtitle, children, role }) {
       { to: '/candidate', label: 'Overview', icon: LayoutDashboard },
       { to: '/candidate/jobs', label: 'Browse Jobs', icon: BriefcaseBusiness },
       { to: '/candidate/saved', label: 'Saved Jobs', icon: Sparkles },
-      { to: '/candidate/applications', label: 'Applications', icon: MessageSquareText },
+      { to: '/candidate/applications', label: 'Applications', icon: BriefcaseBusiness },
+      { to: '/candidate/messages', label: 'Messages', icon: MessageSquareText },
       { to: '/candidate/interview', label: 'Interview', icon: Mic },
       { to: '/candidate/profile', label: 'Profile', icon: Users },
       { to: '/candidate/settings', label: 'Settings', icon: Settings },
@@ -40,7 +42,7 @@ export default function RoleShell({ title, subtitle, children, role }) {
               <Sparkles size={18} />
             </div>
             <div>
-              <p className="text-sm font-semibold tracking-[0.24em] text-indigo-600 uppercase">TalentLense</p>
+              <p className="text-sm font-semibold tracking-[0.24em] text-indigo-600 uppercase">TEEROP</p>
               <p className="text-base font-semibold text-slate-950">{role === 'recruiter' ? 'Recruiter Workspace' : 'Candidate Hub'}</p>
             </div>
           </Link>

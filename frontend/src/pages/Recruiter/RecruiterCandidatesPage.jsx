@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react';
-import { Search, Users, Loader2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Search, Users, Loader2, MessageSquare } from 'lucide-react';
 import RoleShell from '../../components/layout/RoleShell';
 import { atsService } from '../../services/atsService';
+import { messagingService } from '../../services/messagingService';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 import Badge from '../../components/common/Badge';
 import EmptyState from '../../components/common/EmptyState';
+import toast from 'react-hot-toast';
 
 const tierFromScore = (score) => {
   if (score >= 75) return 'green';
@@ -14,9 +17,11 @@ const tierFromScore = (score) => {
 
 export default function RecruiterCandidatesPage() {
   useDocumentTitle('Candidates');
+  const navigate = useNavigate();
   const [candidates, setCandidates] = useState([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
+  const [startingChatId, setStartingChatId] = useState(null);
 
   useEffect(() => {
     const load = async () => {
@@ -33,6 +38,25 @@ export default function RecruiterCandidatesPage() {
     };
     load();
   }, []);
+
+  const handleMessageCandidate = async (candidate) => {
+    if (!candidate.application_id) {
+      toast.error('Messaging is only available for applicants who applied to a specific job.');
+      return;
+    }
+
+    setStartingChatId(candidate.id || candidate.candidate_id);
+    try {
+      const conv = await messagingService.getOrCreateConversation(candidate.application_id);
+      if (conv?.id) {
+        navigate(`/recruiter/messages/${conv.id}`);
+      }
+    } catch (err) {
+      toast.error(err.message || 'Could not start conversation with candidate');
+    } finally {
+      setStartingChatId(null);
+    }
+  };
 
   const filtered = candidates.filter((candidate) =>
     `${candidate.name} ${candidate.email} ${candidate.source || ''}`.toLowerCase().includes(query.toLowerCase())
@@ -74,36 +98,60 @@ export default function RecruiterCandidatesPage() {
           </div>
         ) : (
           <div className="mt-6 grid gap-3">
-            {filtered.map((candidate, index) => (
-              <div
-                key={`${candidate.id || candidate.candidate_id}-${index}`}
-                className="flex flex-col gap-3 rounded-xl border border-slate-100 bg-white p-4 shadow-sm transition-all hover:shadow-md hover:border-slate-200 sm:flex-row sm:items-center sm:justify-between"
-              >
-                <div className="flex-1 min-w-0">
+            {filtered.map((candidate, index) => {
+              const candKey = candidate.id || candidate.candidate_id || index;
+              const isStarting = startingChatId === (candidate.id || candidate.candidate_id);
+
+              return (
+                <div
+                  key={`${candKey}-${index}`}
+                  className="flex flex-col gap-3 rounded-xl border border-slate-100 bg-white p-4 shadow-sm transition-all hover:shadow-md hover:border-slate-200 sm:flex-row sm:items-center sm:justify-between"
+                >
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <p className="font-semibold text-slate-900 truncate">{candidate.name || 'Unnamed'}</p>
+                      {candidate.overall_score && (
+                        <Badge variant={tierFromScore(candidate.overall_score)}>
+                          {Math.round(candidate.overall_score)}%
+                        </Badge>
+                      )}
+                    </div>
+                    <p className="mt-0.5 text-sm text-slate-500 truncate">{candidate.email || 'No email'}</p>
+                    <p className="text-xs text-slate-400 mt-0.5">
+                      {candidate.source === 'gmail' ? (
+                        <span className="font-medium text-indigo-600">From Gmail</span>
+                      ) : candidate.jobTitle ? (
+                        <>Applied to <span className="font-medium text-slate-600">{candidate.jobTitle}</span></>
+                      ) : (
+                        <span className="font-medium text-slate-400">No job assigned</span>
+                      )}
+                    </p>
+                  </div>
+
                   <div className="flex items-center gap-2">
-                    <p className="font-semibold text-slate-900 truncate">{candidate.name || 'Unnamed'}</p>
-                    {candidate.overall_score && (
-                      <Badge variant={tierFromScore(candidate.overall_score)}>
-                        {Math.round(candidate.overall_score)}%
-                      </Badge>
+                    {candidate.application_id && (
+                      <button
+                        type="button"
+                        onClick={() => handleMessageCandidate(candidate)}
+                        disabled={isStarting}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:text-indigo-600 hover:border-indigo-200 hover:bg-indigo-50/50 transition-all shadow-2xs active:scale-95"
+                      >
+                        {isStarting ? (
+                          <Loader2 size={13} className="animate-spin text-indigo-600" />
+                        ) : (
+                          <MessageSquare size={13} className="text-indigo-600" />
+                        )}
+                        <span>Message</span>
+                      </button>
+                    )}
+
+                    {!candidate.overall_score && (
+                      <span className="text-xs text-slate-400 font-medium">Unranked</span>
                     )}
                   </div>
-                  <p className="mt-0.5 text-sm text-slate-500 truncate">{candidate.email || 'No email'}</p>
-                  <p className="text-xs text-slate-400 mt-0.5">
-                    {candidate.source === 'gmail' ? (
-                      <span className="font-medium text-indigo-600">From Gmail</span>
-                    ) : candidate.jobTitle ? (
-                      <>Applied to <span className="font-medium text-slate-600">{candidate.jobTitle}</span></>
-                    ) : (
-                      <span className="font-medium text-slate-400">No job assigned</span>
-                    )}
-                  </p>
                 </div>
-                {!candidate.overall_score && (
-                  <span className="text-xs text-slate-400 font-medium">Unranked</span>
-                )}
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>

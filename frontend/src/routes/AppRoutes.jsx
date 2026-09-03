@@ -13,6 +13,7 @@ import RoleRoute from '../components/auth/RoleRoute';
 import RecruiterOverviewPage from '../pages/Recruiter/RecruiterOverviewPage';
 import RecruiterJobsPage from '../pages/Recruiter/RecruiterJobsPage';
 import RecruiterCandidatesPage from '../pages/Recruiter/RecruiterCandidatesPage';
+import RecruiterMessagesPage from '../pages/Recruiter/RecruiterMessagesPage';
 import RecruiterAnalyticsPage from '../pages/Recruiter/RecruiterAnalyticsPage';
 import RecruiterCompanyPage from '../pages/Recruiter/RecruiterCompanyPage';
 import RecruiterSettingsPage from '../pages/Recruiter/RecruiterSettingsPage';
@@ -21,6 +22,7 @@ import CandidateOverviewPage from '../pages/Candidate/CandidateOverviewPage';
 import CandidateBrowseJobsPage from '../pages/Candidate/CandidateBrowseJobsPage';
 import CandidateSavedJobsPage from '../pages/Candidate/CandidateSavedJobsPage';
 import CandidateApplicationsPage from '../pages/Candidate/CandidateApplicationsPage';
+import CandidateMessagesPage from '../pages/Candidate/CandidateMessagesPage';
 import CandidateProfilePage from '../pages/Candidate/CandidateProfilePage';
 import CandidateSettingsPage from '../pages/Candidate/CandidateSettingsPage';
 import CandidateInterviewPage from '../pages/Candidate/CandidateInterviewPage';
@@ -47,6 +49,8 @@ export default function AppRoutes() {
       <Route path="/recruiter/jobs" element={<ProtectedRoute><RoleRoute allowedRoles={['recruiter']}><RecruiterJobsPage /></RoleRoute></ProtectedRoute>} />
       <Route path="/recruiter/jobs/:jobId" element={<ProtectedRoute><RoleRoute allowedRoles={['recruiter']}><RecruiterJobDashboardPage /></RoleRoute></ProtectedRoute>} />
       <Route path="/recruiter/candidates" element={<ProtectedRoute><RoleRoute allowedRoles={['recruiter']}><RecruiterCandidatesPage /></RoleRoute></ProtectedRoute>} />
+      <Route path="/recruiter/messages" element={<ProtectedRoute><RoleRoute allowedRoles={['recruiter']}><RecruiterMessagesPage /></RoleRoute></ProtectedRoute>} />
+      <Route path="/recruiter/messages/:conversationId" element={<ProtectedRoute><RoleRoute allowedRoles={['recruiter']}><RecruiterMessagesPage /></RoleRoute></ProtectedRoute>} />
       <Route path="/recruiter/analytics" element={<ProtectedRoute><RoleRoute allowedRoles={['recruiter']}><RecruiterAnalyticsPage /></RoleRoute></ProtectedRoute>} />
       <Route path="/recruiter/company" element={<ProtectedRoute><RoleRoute allowedRoles={['recruiter']}><RecruiterCompanyPage /></RoleRoute></ProtectedRoute>} />
       <Route path="/recruiter/settings" element={<ProtectedRoute><RoleRoute allowedRoles={['recruiter']}><RecruiterSettingsPage /></RoleRoute></ProtectedRoute>} />
@@ -56,6 +60,8 @@ export default function AppRoutes() {
       <Route path="/candidate/jobs" element={<ProtectedRoute><RoleRoute allowedRoles={['candidate']}><CandidateBrowseJobsPage /></RoleRoute></ProtectedRoute>} />
       <Route path="/candidate/saved" element={<ProtectedRoute><RoleRoute allowedRoles={['candidate']}><CandidateSavedJobsPage /></RoleRoute></ProtectedRoute>} />
       <Route path="/candidate/applications" element={<ProtectedRoute><RoleRoute allowedRoles={['candidate']}><CandidateApplicationsPage /></RoleRoute></ProtectedRoute>} />
+      <Route path="/candidate/messages" element={<ProtectedRoute><RoleRoute allowedRoles={['candidate']}><CandidateMessagesPage /></RoleRoute></ProtectedRoute>} />
+      <Route path="/candidate/messages/:conversationId" element={<ProtectedRoute><RoleRoute allowedRoles={['candidate']}><CandidateMessagesPage /></RoleRoute></ProtectedRoute>} />
       <Route path="/candidate/interview" element={<ProtectedRoute><RoleRoute allowedRoles={['candidate']}><CandidateInterviewPage /></RoleRoute></ProtectedRoute>} />
       <Route path="/candidate/interview/session/:interviewId" element={<ProtectedRoute><RoleRoute allowedRoles={['candidate']}><CandidateInterviewSessionPage /></RoleRoute></ProtectedRoute>} />
       <Route path="/candidate/interview/results/:interviewId" element={<ProtectedRoute><RoleRoute allowedRoles={['candidate']}><CandidateInterviewResultsPage /></RoleRoute></ProtectedRoute>} />

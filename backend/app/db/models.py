@@ -273,3 +273,47 @@ class InterviewDetailResponse(BaseModel):
     completed_at: Optional[datetime]
     questions: list[InterviewQuestion]
     answers: list[InterviewDetailResult]
+
+
+# ---------------------------------------------------------------------------
+# Messaging
+# ---------------------------------------------------------------------------
+class MessageCreate(BaseModel):
+    message: str = Field(..., min_length=1, max_length=5000)
+
+    @property
+    def trimmed_message(self) -> str:
+        return self.message.strip()
+
+
+class MessageResponse(BaseModel):
+    id: str
+    conversation_id: str
+    sender_id: str
+    message: str
+    is_read: bool = False
+    read_at: Optional[datetime] = None
+    created_at: Optional[datetime] = None
+
+
+class ConversationResponse(BaseModel):
+    id: str
+    application_id: Optional[str] = None
+    job_id: Optional[str] = None
+    candidate_id: Optional[str] = None
+    recruiter_id: Optional[str] = None
+    status: str = "active"
+    last_message_at: Optional[datetime] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+    # Enrichment fields (assembled by backend, not stored in conversations table)
+    candidate_name: Optional[str] = None
+    recruiter_name: Optional[str] = None
+    job_title: Optional[str] = None
+    company_name: Optional[str] = None
+    last_message: Optional[str] = None
+    unread_count: int = 0
+
+
+class UnreadCountResponse(BaseModel):
+    unread_count: int

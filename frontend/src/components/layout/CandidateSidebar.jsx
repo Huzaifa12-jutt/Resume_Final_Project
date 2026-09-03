@@ -8,6 +8,7 @@ import {
   FiSettings,
   FiBookmark,
   FiMic,
+  FiMessageSquare,
 } from 'react-icons/fi';
 
 const CandidateSidebar = ({ collapsed, onCloseMobile }) => {
@@ -15,6 +16,7 @@ const CandidateSidebar = ({ collapsed, onCloseMobile }) => {
     { to: '/candidate', icon: FiGrid, label: 'Dashboard', end: true, gradient: 'from-blue-500 to-cyan-500' },
     { to: '/candidate/jobs', icon: FiSearch, label: 'Browse Jobs', gradient: 'from-purple-500 to-pink-500' },
     { to: '/candidate/applications', icon: FiFileText, label: 'Applications', gradient: 'from-emerald-500 to-teal-500' },
+    { to: '/candidate/messages', icon: FiMessageSquare, label: 'Messages', gradient: 'from-blue-600 to-indigo-600' },
     { to: '/candidate/saved-jobs', icon: FiBookmark, label: 'Saved Jobs', gradient: 'from-orange-500 to-amber-500' },
     { to: '/candidate/interview', icon: FiMic, label: 'AI Interview', gradient: 'from-rose-500 to-pink-500' },
     { to: '/candidate/profile', icon: FiUser, label: 'My Resume & Profile', gradient: 'from-indigo-500 to-purple-500' },

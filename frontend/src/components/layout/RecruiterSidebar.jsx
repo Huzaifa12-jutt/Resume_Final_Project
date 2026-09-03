@@ -14,6 +14,7 @@ const RecruiterSidebar = ({ collapsed, onCloseMobile }) => {
     { to: '/recruiter', icon: FiGrid, label: 'Dashboard', end: true, gradient: 'from-blue-500 to-cyan-500' },
     { to: '/recruiter/jobs', icon: FiBriefcase, label: 'Job Positions', gradient: 'from-purple-500 to-pink-500' },
     { to: '/recruiter/candidates', icon: FiUsers, label: 'Candidates', gradient: 'from-emerald-500 to-teal-500' },
+    { to: '/recruiter/messages', icon: FiMessageSquare, label: 'Messages', gradient: 'from-blue-600 to-indigo-600' },
     { to: '/recruiter/analytics', icon: FiPieChart, label: 'Analytics', gradient: 'from-orange-500 to-amber-500' },
     { to: '/recruiter/chat', icon: FiMessageSquare, label: 'AI HR Chat', gradient: 'from-indigo-500 to-purple-500' },
     { to: '/recruiter/settings', icon: FiSettings, label: 'Settings', gradient: 'from-gray-500 to-slate-500' },

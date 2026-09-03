@@ -16,11 +16,13 @@ import {
 } from 'react-icons/fi';
 import useAuth from '../../hooks/useAuth';
 import useNotifications from '../../hooks/useNotifications';
+import useMessagingUnread from '../../hooks/useMessagingUnread';
 import NotificationDrawer from './NotificationDrawer';
 
 const RecruiterNavbar = () => {
   const { user, logout } = useAuth();
   const { unreadCount } = useNotifications();
+  const { unreadCount: msgUnreadCount } = useMessagingUnread();
   const navigate = useNavigate();
 
   const [profileOpen, setProfileOpen] = useState(false);
@@ -31,6 +33,7 @@ const RecruiterNavbar = () => {
     { to: '/recruiter', icon: FiGrid, label: 'Dashboard', end: true },
     { to: '/recruiter/jobs', icon: FiBriefcase, label: 'Jobs' },
     { to: '/recruiter/candidates', icon: FiUsers, label: 'Candidates' },
+    { to: '/recruiter/messages', icon: FiMessageSquare, label: 'Messages', badge: msgUnreadCount },
     { to: '/recruiter/analytics', icon: FiPieChart, label: 'Analytics' },
     { to: '/recruiter/chat', icon: FiMessageSquare, label: 'AI Assistant' },
   ];
@@ -61,7 +64,7 @@ const RecruiterNavbar = () => {
                 to={link.to}
                 end={link.end}
                 className={({ isActive }) =>
-                  `flex items-center space-x-2 px-3.5 py-2 rounded-xl text-sm font-semibold transition-all ${
+                  `relative flex items-center space-x-2 px-3.5 py-2 rounded-xl text-sm font-semibold transition-all ${
                     isActive
                       ? 'bg-indigo-50 text-indigo-600'
                       : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
@@ -70,6 +73,11 @@ const RecruiterNavbar = () => {
               >
                 <Icon className="h-4 w-4" />
                 <span>{link.label}</span>
+                {link.badge > 0 && (
+                  <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white ml-0.5">
+                    {link.badge > 9 ? '9+' : link.badge}
+                  </span>
+                )}
               </NavLink>
             );
           })}

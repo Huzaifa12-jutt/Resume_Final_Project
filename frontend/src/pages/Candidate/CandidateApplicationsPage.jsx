@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react';
-import { FileText, Calendar, MapPin, Briefcase } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { FileText, Calendar, MapPin, Briefcase, MessageSquare, Loader2 } from 'lucide-react';
 import RoleShell from '../../components/layout/RoleShell';
 import { atsService } from '../../services/atsService';
+import { messagingService } from '../../services/messagingService';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
+import toast from 'react-hot-toast';
 
 const statusColors = {
   'Applied': 'bg-blue-50 text-blue-700 border-blue-200',
@@ -24,8 +27,10 @@ const formatDate = (dateString) => {
 
 export default function CandidateApplicationsPage() {
   useDocumentTitle('My Applications');
+  const navigate = useNavigate();
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [startingChatId, setStartingChatId] = useState(null);
 
   useEffect(() => {
     const load = async () => {
@@ -39,6 +44,20 @@ export default function CandidateApplicationsPage() {
     };
     load();
   }, []);
+
+  const handleMessageRecruiter = async (applicationId) => {
+    setStartingChatId(applicationId);
+    try {
+      const conversation = await messagingService.getOrCreateConversation(applicationId);
+      if (conversation?.id) {
+        navigate(`/candidate/messages/${conversation.id}`);
+      }
+    } catch (err) {
+      toast.error(err.message || 'Could not open conversation with recruiter');
+    } finally {
+      setStartingChatId(null);
+    }
+  };
 
   return (
     <RoleShell title="Applications" subtitle="Track every application from a single place." role="candidate">
@@ -55,13 +74,18 @@ export default function CandidateApplicationsPage() {
         ) : (
           <div className="grid gap-4">
             {applications.map((application) => (
-              <div key={application.id} className="rounded-2xl border border-slate-200 p-5 bg-slate-50 hover:bg-slate-100 transition">
-                <div className="flex items-start justify-between gap-4">
+              <div key={application.id} className="rounded-2xl border border-slate-200 p-5 bg-slate-50 hover:bg-slate-100/80 transition">
+                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                   <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-slate-950">
-                      {application.job_title || 'Unknown Position'}
-                    </h3>
-                    <p className="mt-1 text-sm text-slate-600">
+                    <div className="flex items-center gap-3">
+                      <h3 className="text-lg font-semibold text-slate-950">
+                        {application.job_title || 'Unknown Position'}
+                      </h3>
+                      <span className={`inline-flex items-center rounded-full border px-3 py-0.5 text-xs font-medium ${statusColors[application.status] || statusColors['Applied']}`}>
+                        {application.status || 'Applied'}
+                      </span>
+                    </div>
+                    <p className="mt-1 text-sm text-slate-600 font-medium">
                       {application.company_name || 'Company'}
                     </p>
                     <div className="mt-3 flex flex-wrap gap-4 text-sm text-slate-500">
@@ -83,9 +107,22 @@ export default function CandidateApplicationsPage() {
                       </div>
                     </div>
                   </div>
-                  <span className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium ${statusColors[application.status] || statusColors['Applied']}`}>
-                    {application.status || 'Applied'}
-                  </span>
+
+                  <div className="shrink-0 pt-1">
+                    <button
+                      type="button"
+                      onClick={() => handleMessageRecruiter(application.id)}
+                      disabled={startingChatId === application.id}
+                      className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-200 text-slate-700 hover:text-indigo-600 hover:border-indigo-200 hover:bg-indigo-50/50 shadow-xs transition-all active:scale-95"
+                    >
+                      {startingChatId === application.id ? (
+                        <Loader2 size={14} className="animate-spin text-indigo-600" />
+                      ) : (
+                        <MessageSquare size={14} className="text-indigo-600" />
+                      )}
+                      <span>Message Recruiter</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}

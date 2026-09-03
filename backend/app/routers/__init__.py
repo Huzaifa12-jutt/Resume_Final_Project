@@ -1,1 +1,1 @@
-from . import auth, candidates, rankings, chat, notifications, ats, gmail, interview
+from . import auth, candidates, rankings, chat, notifications, ats, gmail, interview, messaging
