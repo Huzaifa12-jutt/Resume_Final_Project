@@ -13,8 +13,9 @@ from fastapi import APIRouter, HTTPException, UploadFile, File, Depends
 
 from app.core.config import get_settings
 from app.db.models import CandidateResponse
-from app.db.supabase_client import get_supabase, upload_resume_file
+from app.db.supabase_client import get_supabase, upload_resume_file, get_resume_signed_url
 from app.services.resume_parser import parse_resume
+from app.services.file_validator import validate_resume_file
 from app.services.cv_generator import SAMPLE_CV_GENERATORS
 from app.routers.auth import require_role
 from app.routers.ats import _owned_job
@@ -23,17 +24,34 @@ router = APIRouter(prefix="/jobs/{job_id}/candidates", tags=["Candidates"])
 settings = get_settings()
 
 
-def _store_candidate(job_id: str, filename: str, file_bytes: bytes) -> dict:
-    """Parses one resume PDF, uploads it to Storage, and inserts the row."""
+def _store_candidate(
+    job_id: str,
+    filename: str,
+    file_bytes: bytes,
+    file_extension: str = ".pdf",
+    content_type: str = "application/pdf"
+) -> dict:
+    """Parses one resume (PDF, PNG, JPG, JPEG), uploads it to Storage, and inserts the row."""
     try:
-        parsed = parse_resume(io.BytesIO(file_bytes), filename)
+        parsed = parse_resume(io.BytesIO(file_bytes), filename, content_type=content_type)
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=422, detail=f"Could not parse '{filename}': {e}")
 
     candidate_id = str(uuid.uuid4())
 
     try:
-        storage_path = upload_resume_file(job_id, candidate_id, file_bytes)
+        try:
+            storage_path = upload_resume_file(
+                job_id,
+                candidate_id,
+                file_bytes,
+                file_extension=file_extension,
+                content_type=content_type,
+            )
+        except TypeError:
+            storage_path = upload_resume_file(job_id, candidate_id, file_bytes)
     except Exception as e:
         raise HTTPException(status_code=502, detail=f"Storage upload failed for '{filename}': {e}")
 
@@ -61,21 +79,31 @@ def _store_candidate(job_id: str, filename: str, file_bytes: bytes) -> dict:
 
 @router.post("", response_model=list[CandidateResponse], status_code=201)
 async def upload_candidates(job_id: str, files: list[UploadFile] = File(...), user=Depends(require_role('recruiter'))):
-    """Upload one or more PDF resumes for a job. Each is parsed and stored."""
+    """Upload one or more PDF/image resumes for a job. Each is validated, parsed and stored."""
     _owned_job(job_id, user['id'])
 
     if not files:
         raise HTTPException(status_code=400, detail="No files uploaded")
 
-    max_bytes = settings.MAX_UPLOAD_MB * 1024 * 1024
     created = []
     for f in files:
-        if not f.filename.lower().endswith(".pdf"):
-            raise HTTPException(status_code=415, detail=f"'{f.filename}' is not a PDF")
         content = await f.read()
-        if len(content) > max_bytes:
-            raise HTTPException(status_code=413, detail=f"'{f.filename}' exceeds {settings.MAX_UPLOAD_MB}MB limit")
-        created.append(_store_candidate(job_id, f.filename, content))
+        detected_type, ext = validate_resume_file(f.filename, content, f.content_type or "")
+        
+        # Determine appropriate MIME type for storage
+        mime = f.content_type or (
+            "application/pdf" if ext == ".pdf"
+            else "image/png" if ext == ".png"
+            else "image/jpeg"
+        )
+        
+        created.append(_store_candidate(
+            job_id=job_id,
+            filename=f.filename,
+            file_bytes=content,
+            file_extension=ext,
+            content_type=mime
+        ))
 
     return created
 
@@ -89,8 +117,33 @@ def generate_sample_candidates(job_id: str, user=Depends(require_role('recruiter
     for label, generator_fn in SAMPLE_CV_GENERATORS.items():
         filename = label.split(" - ")[0].replace(" ", "_") + ".pdf"
         pdf_bytes = generator_fn()
-        created.append(_store_candidate(job_id, filename, pdf_bytes))
+        created.append(_store_candidate(job_id, filename, pdf_bytes, file_extension=".pdf", content_type="application/pdf"))
     return created
+
+
+@router.get("/{candidate_id}/resume-url")
+def get_candidate_resume_url(job_id: str, candidate_id: str, user=Depends(require_role('recruiter'))):
+    """Generates a signed URL for a recruiter to view or download a candidate's resume."""
+    _owned_job(job_id, user['id'])
+    
+    supabase = get_supabase()
+    result = (
+        supabase.table("candidates")
+        .select("resume_file_path, filename")
+        .eq("job_id", job_id)
+        .eq("id", candidate_id)
+        .execute()
+    )
+    if not result.data or not result.data[0].get("resume_file_path"):
+        raise HTTPException(status_code=404, detail="Candidate resume not found")
+    
+    storage_path = result.data[0]["resume_file_path"]
+    signed_url = get_resume_signed_url(storage_path)
+    return {
+        "url": signed_url,
+        "filename": result.data[0].get("filename") or "resume",
+        "resume_file_path": storage_path,
+    }
 
 
 @router.get("/{candidate_id}", response_model=CandidateResponse)

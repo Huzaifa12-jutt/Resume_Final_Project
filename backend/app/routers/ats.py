@@ -1,10 +1,10 @@
 """Company, candidate-profile, application, search and analytics endpoints."""
-import io, uuid
+import io, uuid, os
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
-from app.db.supabase_client import get_supabase, get_resume_signed_url
+from app.db.supabase_client import get_supabase, get_resume_signed_url, upload_resume_file
 from app.db.models import CompanyUpsert, CandidateProfileUpdate, ApplicationCreate, ApplicationStatusUpdate,PublicJobResponse, RecruiterNotesUpdate, RecruiterJobCreate, RecruiterJobUpdate, AIDescriptionRequest
 from app.services.resume_parser import parse_resume
-from app.db.supabase_client import upload_resume_file
+from app.services.file_validator import validate_resume_file
 from app.services.ranking_engine import rank_candidates, score_tier
 from app.routers.auth import current_user, require_role
 from uuid import UUID
@@ -51,43 +51,51 @@ def upsert_profile(payload: CandidateProfileUpdate, user=Depends(require_role('c
 def profile_resume_url(user=Depends(require_role('candidate'))):
     result=get_supabase().table('candidate_profiles').select('resume_path').eq('user_id',user['id']).execute()
     if not result.data or not result.data[0].get('resume_path'): raise HTTPException(404,'No profile resume uploaded')
-    return {'url': get_resume_signed_url(result.data[0]['resume_path'])}
+    resume_path = result.data[0]['resume_path']
+    return {
+        'url': get_resume_signed_url(resume_path),
+        'file_name': os.path.basename(resume_path),
+        'resume_path': resume_path,
+    }
 
 @router.post('/candidate-profile/resume')
 async def upload_profile_resume(file: UploadFile = File(...), user=Depends(require_role('candidate'))):
-    print(f"🔵 Resume upload request from user: {user['id']}")
-    print(f"🔵 File: {file.filename}, Size: {file.size if hasattr(file, 'size') else 'unknown'}")
+    print(f"[INFO] Resume upload request from user: {user['id']}")
+    print(f"[INFO] File: {file.filename}, Size: {file.size if hasattr(file, 'size') else 'unknown'}")
     
-    if not file.filename.lower().endswith('.pdf'):
-        print("🔴 File is not PDF")
-        raise HTTPException(415,'Only PDF resumes are supported')
+    content = await file.read()
+    detected_type, ext = validate_resume_file(file.filename, content, file.content_type or "")
     
-    content=await file.read()
-    print(f"🔵 Content length: {len(content)} bytes")
-    
-    if len(content) > 10 * 1024 * 1024:
-        print("🔴 File too large")
-        raise HTTPException(413,'Resume exceeds 10MB limit')
+    mime = file.content_type or (
+        "application/pdf" if ext == ".pdf"
+        else "image/png" if ext == ".png"
+        else "image/jpeg"
+    )
+
+    try:
+        print("[INFO] Parsing resume...")
+        parsed = parse_resume(io.BytesIO(content), file.filename, content_type=mime)
+        print(f"[INFO] Resume parsed successfully. Skills: {parsed.get('skills', [])}")
+    except HTTPException:
+        raise
+    except Exception as exc:
+        print(f"[ERROR] Parse error: {exc}")
+        raise HTTPException(422, f'Could not parse resume: {exc}')
     
     try:
-        print("🔵 Parsing resume...")
-        parsed=parse_resume(io.BytesIO(content),file.filename)
-        print(f"🔵 Resume parsed successfully. Skills: {parsed.get('skills', [])}")
-    except Exception as exc:
-        print(f"🔴 Parse error: {exc}")
-        raise HTTPException(422,f'Could not parse resume: {exc}')
-    
-    path=upload_resume_file('profiles',user['id'],content)
-    print(f"🔵 Resume uploaded to: {path}")
+        path = upload_resume_file('profiles', user['id'], content, file_extension=ext, content_type=mime)
+    except TypeError:
+        path = upload_resume_file('profiles', user['id'], content)
+    print(f"[INFO] Resume uploaded to: {path}")
     
     db=get_supabase()
     data={'user_id':user['id'],'headline':parsed.get('name'),'skills':parsed.get('skills',[]),'education':parsed.get('education'),'experience':parsed.get('experience'),'certifications':parsed.get('certifications'),'summary':parsed.get('raw_text','')[:1000],'raw_text':parsed.get('raw_text'),'parsed_resume_json':parsed,'resume_path':path,'profile_completion':80}
     
     existing=db.table('candidate_profiles').select('user_id').eq('user_id',user['id']).execute()
-    print(f"🔵 Existing profile: {bool(existing.data)}")
+    print(f"[INFO] Existing profile: {bool(existing.data)}")
     
     result = (db.table('candidate_profiles').update(data).eq('user_id',user['id']) if existing.data else db.table('candidate_profiles').insert(data)).execute().data[0]
-    print(f"✅ Resume saved successfully. raw_text length: {len(data.get('raw_text', ''))}")
+    print(f"[SUCCESS] Resume saved successfully. raw_text length: {len(data.get('raw_text', ''))}")
     
     return result
 
@@ -282,7 +290,9 @@ def apply(job_id: str, payload: ApplicationCreate, user=Depends(require_role('ca
     if db.table('applications').select('id').eq('candidate_id',user['id']).eq('job_id',job_id).execute().data: raise HTTPException(409,'You have already applied to this job')
     profile_data=profile.data[0]
     parsed=profile_data.get('parsed_resume_json') or {}
-    candidate_row={'job_id':job_id,'filename':'candidate-profile-resume.pdf','name':user.get('full_name'),'email':user['email'],'phone':user.get('phone'),'skills':profile_data.get('skills') or [],'education':profile_data.get('education') or '', 'experience':profile_data.get('experience') or '', 'certifications':profile_data.get('certifications') or '', 'projects':'', 'raw_text':profile_data.get('raw_text') or '', 'resume_file_path':profile_data['resume_path']}
+    applied_ext = os.path.splitext(profile_data['resume_path'])[1] or '.pdf'
+    applied_filename = f"candidate-profile-resume{applied_ext}"
+    candidate_row={'job_id':job_id,'filename':applied_filename,'name':user.get('full_name'),'email':user['email'],'phone':user.get('phone'),'skills':profile_data.get('skills') or [],'education':profile_data.get('education') or '', 'experience':profile_data.get('experience') or '', 'certifications':profile_data.get('certifications') or '', 'projects':'', 'raw_text':profile_data.get('raw_text') or '', 'resume_file_path':profile_data['resume_path']}
     candidate=db.table('candidates').insert(candidate_row).execute().data[0]
     ranked=rank_candidates([{**candidate_row, '_id':candidate['id']}], job.data[0]['description'])[0]
     score_row={'candidate_id':candidate['id'],'overall_score':ranked['overall_score'],'skills_score':ranked['breakdown']['skills'],'experience_score':ranked['breakdown']['experience'],'education_score':ranked['breakdown']['education'],'certifications_score':ranked['breakdown']['certifications'],'projects_score':ranked['breakdown']['projects'],'matched_skills':ranked['matched_skills'],'missing_skills':ranked['missing_skills'],'strengths':ranked['strengths'],'weaknesses':ranked['weaknesses'],'rank':ranked['rank']}

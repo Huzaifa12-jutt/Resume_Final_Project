@@ -5,16 +5,8 @@ import RoleShell from '../../components/layout/RoleShell';
 import { atsService } from '../../services/atsService';
 import { messagingService } from '../../services/messagingService';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
+import StatusBadge from '../../components/common/StatusBadge';
 import toast from 'react-hot-toast';
-
-const statusColors = {
-  'Applied': 'bg-blue-50 text-blue-700 border-blue-200',
-  'Under Review': 'bg-yellow-50 text-yellow-700 border-yellow-200',
-  'Shortlisted': 'bg-green-50 text-green-700 border-green-200',
-  'Interview': 'bg-purple-50 text-purple-700 border-purple-200',
-  'Accepted': 'bg-emerald-50 text-emerald-700 border-emerald-200',
-  'Rejected': 'bg-red-50 text-red-700 border-red-200',
-};
 
 const formatDate = (dateString) => {
   if (!dateString) return 'N/A';
@@ -81,9 +73,7 @@ export default function CandidateApplicationsPage() {
                       <h3 className="text-lg font-semibold text-slate-950">
                         {application.job_title || 'Unknown Position'}
                       </h3>
-                      <span className={`inline-flex items-center rounded-full border px-3 py-0.5 text-xs font-medium ${statusColors[application.status] || statusColors['Applied']}`}>
-                        {application.status || 'Applied'}
-                      </span>
+                      <StatusBadge status={application.status} />
                     </div>
                     <p className="mt-1 text-sm text-slate-600 font-medium">
                       {application.company_name || 'Company'}

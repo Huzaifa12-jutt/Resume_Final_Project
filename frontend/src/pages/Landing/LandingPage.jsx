@@ -27,6 +27,9 @@ import {
 } from 'lucide-react';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 import FeaturedJobsCarousel from '../../components/jobs/FeaturedJobsCarousel';
+import TeeropLogo from '../../components/common/TeeropLogo';
+
+export { TeeropLogo };
 
 /* ------------------------------------------------------------------ */
 /* Content                                                              */
@@ -45,14 +48,14 @@ const companies = ['TEEROP', 'Apex', 'UrbanNest', 'Nexa', 'Vanta', 'Orbit'];
 const features = [
   { icon: FileText, title: 'AI Resume Parsing', description: 'Instantly extract skills, experience, and education into clean structured data from any resume format.' },
   { icon: ListChecks, title: 'AI Candidate Ranking', description: 'Automatically score and rank applicants against your job description with explainable match insights.' },
-  { icon: UploadIcon, title: 'Bulk Resume Upload', description: 'Drop in hundreds of resumes at once and let TalentLense process the entire batch in the background.' },
+  { icon: UploadIcon, title: 'Bulk Resume Upload', description: 'Drop in hundreds of resumes at once and let TEEROP process the entire batch in the background.' },
   { icon: Layers, title: 'Smart Job Description Generator', description: 'Generate clear, structured job descriptions from a short prompt about the role you need to fill.' },
   { icon: Bot, title: 'AI HR Assistant', description: 'Chat with an intelligent assistant to compare candidates, draft outreach, and answer hiring questions.' },
   { icon: PieChart, title: 'Application Tracking', description: "Track every applicant's status from submission to offer in one clean, modern dashboard." },
 ];
 
 const steps = [
-  { icon: UploadIcon, title: 'Create Job', desc: 'Describe the role and let TalentLense draft the requirements with you.' },
+  { icon: UploadIcon, title: 'Create Job', desc: 'Describe the role and let TEEROP draft the requirements with you.' },
   { icon: ScanEye, title: 'Upload Resumes', desc: 'Add resumes one at a time or receive them directly from applicants.' },
   { icon: ListOrdered, title: 'AI Analysis', desc: 'Every resume is parsed and scored against the role automatically.' },
   { icon: UserCheck, title: 'Hire Best Candidate', desc: 'Review ranked profiles and move forward with confidence.' },
@@ -63,75 +66,6 @@ const testimonials = [
   { name: 'Daniel Reyes', role: 'Recruiting Lead, Vertex', quote: 'The AI ranking is remarkably accurate and the assistant feels like a real teammate on the hiring team.' },
   { name: 'Priya Nair', role: 'Founder, Stackly', quote: 'We went from a spreadsheet of resumes to a ranked shortlist in minutes. It changed how we hire.' },
 ];
-
-export function TeeropLogo({ large = false }) {
-  // Dynamically scale both the icon and the text based on the 'large' prop
-  const containerClass = large ? 'flex items-center gap-3 sm:gap-4' : 'flex items-center gap-2 sm:gap-2.5';
-  const iconSize = large ? 'w-10 h-10 sm:w-14 sm:h-14 lg:w-16 lg:h-16' : 'w-7 h-7 sm:w-8 sm:h-8';
-  const textSize = large
-    ? 'text-[2.2rem] sm:text-[3.2rem] lg:text-[4.25rem]'
-    : 'text-[1.1rem] sm:text-[1.2rem]';
-
-  return (
-    <div className={`select-none ${containerClass}`}>
-      {/* Custom SVG Brand Icon */}
-      <svg
-        className={`${iconSize} drop-shadow-md shrink-0`}
-        viewBox="0 0 100 100"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <defs>
-          <linearGradient id="teeropPrimary" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#06b6d4" />   {/* Cyan 500 */}
-            <stop offset="100%" stopColor="#2563eb" /> {/* Blue 600 */}
-          </linearGradient>
-          <linearGradient id="teeropSecondary" x1="0%" y1="100%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#14b8a6" />   {/* Teal 500 */}
-            <stop offset="100%" stopColor="#0ea5e9" /> {/* Sky 500 */}
-          </linearGradient>
-        </defs>
-
-        {/* Outer Hexagon - Represents structured data and process */}
-        <path
-          d="M50 5 L89 27.5 V72.5 L50 95 L11 72.5 V27.5 Z"
-          fill="url(#teeropPrimary)"
-          fillOpacity="0.12"
-        />
-        <path
-          d="M50 5 L89 27.5 V72.5 L50 95 L11 72.5 V27.5 Z"
-          stroke="url(#teeropPrimary)"
-          strokeWidth="6"
-          strokeLinejoin="round"
-        />
-
-        {/* Inner Stylized 'T' - Represents the brand and technical precision */}
-        <path
-          d="M32 32 H68 A 4 4 0 0 1 72 36 V44 A 4 4 0 0 1 68 48 H56 V68 A 4 4 0 0 1 52 72 H48 A 4 4 0 0 1 44 68 V48 H32 A 4 4 0 0 1 28 44 V36 A 4 4 0 0 1 32 32 Z"
-          fill="url(#teeropSecondary)"
-        />
-
-        {/* Core Node - Represents AI intelligence/focus */}
-        <circle cx="50" cy="50" r="4" fill="#ffffff" className="animate-pulse" />
-      </svg>
-
-      {/* Brand Wordmark Typography */}
-      <span
-        className={`font-black leading-none uppercase ${textSize}`}
-        style={{
-          letterSpacing: large ? '-0.065em' : '-0.04em',
-          background: 'linear-gradient(90deg, #06b6d4 0%, #14b8a6 26%, #0ea5e9 48%, #2563eb 100%)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          backgroundClip: 'text',
-          textShadow: '0 12px 28px rgba(6, 182, 212, 0.15)',
-        }}
-      >
-        TEEROP
-      </span>
-    </div>
-  );
-}
 
 /* ------------------------------------------------------------------ */
 /* Navbar — sticky, blurred, smooth-scroll with active-section state   */
@@ -269,7 +203,7 @@ export default function LandingPage() {
               </span>
 
               <div className="mt-6">
-                <TeeropLogo large={true} />
+                <TeeropLogo size="xl" animated={true} />
               </div>
 
               <h1 className="mt-5 text-[2.65rem] sm:text-[3.6rem] lg:text-[5rem] font-black text-slate-900 tracking-[-0.07em] leading-[0.9]">
@@ -494,7 +428,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Why choose TalentLense — manual vs AI comparison */}
+        {/* Why choose TEEROP — manual vs AI comparison */}
         <section className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-50/50 border-y border-slate-100">
           <div className="max-w-7xl mx-auto">
             <div className="text-center max-w-2xl mx-auto mb-14 space-y-3">
@@ -671,7 +605,7 @@ export default function LandingPage() {
             <div>
               <h4 className="text-sm font-semibold text-white mb-4">Connect</h4>
               <div className="flex gap-3">
-                <a href="mailto:hello@talentlense.com" className="p-2 rounded-lg bg-slate-800 hover:text-white" aria-label="Contact"><AtSign size={16} /></a>
+                <a href="mailto:hello@teerop.com" className="p-2 rounded-lg bg-slate-800 hover:text-white" aria-label="Contact"><AtSign size={16} /></a>
               </div>
             </div>
           </div>

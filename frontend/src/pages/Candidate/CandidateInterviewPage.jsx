@@ -4,8 +4,11 @@ import { useNavigate, Link } from 'react-router-dom';
 import interviewService from '../../services/interviewService';
 import api from '../../api/axios';
 import Loader from '../../components/common/Loader';
+import RoleShell from '../../components/layout/RoleShell';
+import useDocumentTitle from '../../hooks/useDocumentTitle';
 
 const CandidateInterviewPage = () => {
+  useDocumentTitle('AI Interview');
   const navigate = useNavigate();
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -72,8 +75,10 @@ const CandidateInterviewPage = () => {
     const file = e.target.files[0];
     if (!file) return;
 
-    if (file.type !== 'application/pdf') {
-      alert('Please upload a PDF file');
+    const allowedExtensions = ['.pdf', '.png', '.jpg', '.jpeg'];
+    const ext = '.' + file.name.split('.').pop().toLowerCase();
+    if (!allowedExtensions.includes(ext)) {
+      alert('Please upload a PDF, PNG, JPG, or JPEG file');
       return;
     }
 
@@ -156,56 +161,46 @@ const CandidateInterviewPage = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <Loader size="lg" />
-      </div>
+      <RoleShell title="AI Interview Simulator" subtitle="Practice your interview skills with AI-generated questions tailored to your resume." role="candidate">
+        <div className="flex items-center justify-center h-64">
+          <Loader size="lg" />
+        </div>
+      </RoleShell>
     );
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-6 space-y-8">
-      {/* Header */}
-      <div className="text-center space-y-4">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-teal-600 to-indigo-600 text-white mb-4">
-          <FiMic className="h-8 w-8" />
-        </div>
-        <h1 className="text-3xl font-bold bg-gradient-to-r from-teal-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
-          AI Interview Simulator
-        </h1>
-        <p className="text-gray-600 max-w-2xl mx-auto">
-          Practice your interview skills with AI-generated questions tailored to your resume and experience.
-        </p>
-      </div>
-
-      {/* Start Interview Card */}
-      <div className="bg-gradient-to-br from-teal-50 via-indigo-50 to-purple-50 rounded-2xl p-8 border border-teal-100">
-        <div className="flex items-center justify-between">
-          <div className="space-y-2">
-            <h2 className="text-xl font-bold text-gray-900">Start New Interview</h2>
-            <p className="text-gray-600">
-              AI will generate personalized questions based on your resume
-            </p>
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Number of Questions</label>
-              <div className="flex gap-3">
-                {[5, 10, 15].map((count) => (
-                  <button
-                    key={count}
-                    onClick={() => setQuestionCount(count)}
-                    className={`px-4 py-2 rounded-lg font-medium transition ${
-                      questionCount === count
-                        ? 'bg-gradient-to-r from-teal-600 to-indigo-600 text-white shadow-lg'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                  >
-                    {count}
-                  </button>
-                ))}
+    <RoleShell title="AI Interview Simulator" subtitle="Practice your interview skills with AI-generated questions tailored to your resume." role="candidate">
+      <div className="space-y-6">
+        {/* Start Interview Card */}
+        <div className="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200/80 shadow-xs">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div className="space-y-2">
+              <h2 className="text-xl font-bold text-slate-900">Start New Interview</h2>
+              <p className="text-sm text-slate-500">
+                TEEROP's AI will generate personalized technical and behavioral questions based on your active resume profile.
+              </p>
+              <div className="pt-2 pb-1">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-2">Number of Questions</label>
+                <div className="flex gap-2.5">
+                  {[5, 10, 15].map((count) => (
+                    <button
+                      key={count}
+                      onClick={() => setQuestionCount(count)}
+                      className={`px-4 py-2 rounded-xl text-sm font-semibold transition ${
+                        questionCount === count
+                          ? 'bg-indigo-600 text-white shadow-xs'
+                          : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                      }`}
+                    >
+                      {count}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
-            <div className="flex items-center gap-4 text-sm text-gray-600">
-              <span className="flex items-center">
-                <FiCheckCircle className="h-4 w-4 mr-1 text-teal-500" />
+              <div className="flex items-center gap-4 text-xs font-medium text-slate-500">
+                <span className="flex items-center">
+                  <FiCheckCircle className="h-4 w-4 mr-1 text-emerald-600" />
                 {questionCount} Questions
               </span>
               <span className="flex items-center">
@@ -242,14 +237,14 @@ const CandidateInterviewPage = () => {
               <FiFileText className="h-12 w-12 text-indigo-400 mb-3" />
               <h3 className="font-semibold text-gray-900 mb-2">Upload Resume for Interview</h3>
               <p className="text-sm text-gray-600 mb-4">
-                Upload your resume to start the AI interview
+                Upload your resume (PDF, PNG, JPG, or JPEG) to start the AI interview
               </p>
               <label className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition">
                 <FiUpload className="h-4 w-4" />
                 <span>{uploading ? 'Uploading...' : 'Upload Resume'}</span>
                 <input
                   type="file"
-                  accept=".pdf"
+                  accept=".pdf,.png,.jpg,.jpeg,application/pdf,image/png,image/jpeg"
                   onChange={handleResumeUpload}
                   disabled={uploading}
                   className="hidden"
@@ -315,7 +310,8 @@ const CandidateInterviewPage = () => {
           </div>
         )}
       </div>
-    </div>
+      </div>
+    </RoleShell>
   );
 };
 

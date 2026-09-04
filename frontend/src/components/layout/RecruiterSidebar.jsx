@@ -5,19 +5,20 @@ import {
   FiBriefcase,
   FiUsers,
   FiMessageSquare,
-  FiSettings,
   FiPieChart,
+  FiHome,
+  FiSettings,
 } from 'react-icons/fi';
 
 const RecruiterSidebar = ({ collapsed, onCloseMobile }) => {
   const links = [
-    { to: '/recruiter', icon: FiGrid, label: 'Dashboard', end: true, gradient: 'from-blue-500 to-cyan-500' },
-    { to: '/recruiter/jobs', icon: FiBriefcase, label: 'Job Positions', gradient: 'from-purple-500 to-pink-500' },
-    { to: '/recruiter/candidates', icon: FiUsers, label: 'Candidates', gradient: 'from-emerald-500 to-teal-500' },
-    { to: '/recruiter/messages', icon: FiMessageSquare, label: 'Messages', gradient: 'from-blue-600 to-indigo-600' },
-    { to: '/recruiter/analytics', icon: FiPieChart, label: 'Analytics', gradient: 'from-orange-500 to-amber-500' },
-    { to: '/recruiter/chat', icon: FiMessageSquare, label: 'AI HR Chat', gradient: 'from-indigo-500 to-purple-500' },
-    { to: '/recruiter/settings', icon: FiSettings, label: 'Settings', gradient: 'from-gray-500 to-slate-500' },
+    { to: '/recruiter', icon: FiGrid, label: 'Dashboard', end: true },
+    { to: '/recruiter/jobs', icon: FiBriefcase, label: 'Job Positions' },
+    { to: '/recruiter/candidates', icon: FiUsers, label: 'Candidates' },
+    { to: '/recruiter/messages', icon: FiMessageSquare, label: 'Messages' },
+    { to: '/recruiter/analytics', icon: FiPieChart, label: 'Analytics' },
+    { to: '/recruiter/company', icon: FiHome, label: 'Company' },
+    { to: '/recruiter/settings', icon: FiSettings, label: 'Settings' },
   ];
 
   return (
@@ -31,10 +32,10 @@ const RecruiterSidebar = ({ collapsed, onCloseMobile }) => {
             end={link.end}
             onClick={onCloseMobile}
             className={({ isActive }) =>
-              `flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
+              `flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 ${
                 isActive
-                  ? `bg-gradient-to-r ${link.gradient} text-white shadow-lg shadow-gray-900/10 font-semibold transform scale-[1.02]`
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100'
+                  ? 'bg-indigo-50 text-indigo-700 font-semibold shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/70'
               }`
             }
           >

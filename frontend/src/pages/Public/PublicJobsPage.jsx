@@ -172,7 +172,7 @@ export default function PublicJobsPage() {
 
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.25em] text-indigo-600">
-                TalentLense
+                TEEROP
               </p>
 
               <p className="text-sm font-semibold text-slate-900">
@@ -502,7 +502,7 @@ export default function PublicJobsPage() {
                           <div className="min-w-0">
                             <p className="truncate text-xs font-semibold uppercase tracking-wide text-slate-500">
                               {job.company_name ||
-                                'TalentLense Hiring Team'}
+                                'TEEROP Hiring Team'}
                             </p>
 
                             <h3 className="mt-1 line-clamp-2 text-xl font-bold leading-tight text-slate-950">
@@ -644,7 +644,7 @@ export default function PublicJobsPage() {
                 <div className="max-w-2xl">
                   <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-indigo-200">
                     <Sparkles size={13} />
-                    TalentLense
+                    TEEROP
                   </div>
 
                   <h2 className="mt-4 text-2xl font-bold tracking-tight sm:text-3xl">
@@ -677,7 +677,7 @@ export default function PublicJobsPage() {
         <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-8 text-sm text-slate-500 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
           <div>
             <p className="font-semibold text-slate-800">
-              TalentLense
+              TEEROP
             </p>
 
             <p className="mt-1">

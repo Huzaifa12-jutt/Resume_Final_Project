@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { FiBriefcase, FiMenu, FiX, FiArrowRight } from 'react-icons/fi';
+import { FiMenu, FiX, FiArrowRight } from 'react-icons/fi';
 import Button from '../common/Button';
+import TeeropLogo from '../common/TeeropLogo';
 
 const PublicNavbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -38,11 +39,8 @@ const PublicNavbar = () => {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="flex items-center space-x-3 group">
-          <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-indigo-600 to-blue-600 text-white flex items-center justify-center font-bold shadow-md shadow-indigo-500/20 group-hover:shadow-lg transition-all">
-            <FiBriefcase className="h-5 w-5" />
-          </div>
-          <span className="text-xl font-extrabold text-gray-900 tracking-tight">TEEROP</span>
+        <Link to="/" className="flex items-center group">
+          <TeeropLogo size="md" />
         </Link>
 
         {/* Desktop Links */}

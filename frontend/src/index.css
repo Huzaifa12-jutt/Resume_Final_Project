@@ -1,10 +1,9 @@
 @import "tailwindcss";
 
 /* =============================================================================
-   TalentLense Design System v3.0 - Eye Catching & Colorful
+   TEEROP Design System - Professional AI-Powered ATS
    =============================================================================
-   A premium, vibrant design language across the entire application.
-   Brand: TalentLense — Teal/Navy primary with Electric Emerald accent
+   Brand: TEEROP — Modern Indigo/Blue SaaS primary with Cyan/Sky focal accents
    Type: Inter for UI, JetBrains Mono for data/monospaced
    ============================================================================= */
 
@@ -19,7 +18,28 @@
   --color-mist: #e2e8f0;
   --color-mist-dark: #94a3b8;
 
-  /* Premium minimal palette: ice blue / sky / deep blue */
+  /* TEEROP Primary Brand Palette (Indigo / Tech Blue) */
+  --color-brand-50: #eef2ff;
+  --color-brand-100: #e0e7ff;
+  --color-brand-200: #c7d2fe;
+  --color-brand-300: #a5b4fc;
+  --color-brand-400: #818cf8;
+  --color-brand-500: #6366f1;
+  --color-brand-600: #4f46e5;
+  --color-brand-700: #4338ca;
+  --color-brand-800: #3730a3;
+  --color-brand-900: #312e81;
+  --color-brand-950: #1e1b4b;
+
+  /* Indigo aliases for component utility references */
+  --color-indigo-50: #eef2ff;
+  --color-indigo-100: #e0e7ff;
+  --color-indigo-200: #c7d2fe;
+  --color-indigo-500: #6366f1;
+  --color-indigo-600: #4f46e5;
+  --color-indigo-700: #4338ca;
+
+  /* Sky / Cyan accent */
   --color-primary-50: #f0f9ff;
   --color-primary-100: #e0f2fe;
   --color-primary-200: #bae6fd;
@@ -30,7 +50,7 @@
   --color-primary-900: #0f4c81;
   --color-primary-950: #0a2540;
 
-  /* Deep blue / slate brand */
+  /* Deep navy brand surfaces */
   --color-navy-50: #f8fafc;
   --color-navy-100: #e2e8f0;
   --color-navy-200: #cbd5e1;
@@ -41,7 +61,7 @@
   --color-navy-900: #172554;
   --color-navy-950: #020817;
 
-  /* Accent — soft cyan/ice */
+  /* Accent — soft cyan/teal */
   --color-accent-50: #f0fdfa;
   --color-accent-100: #dffaf8;
   --color-accent-200: #c6f5ef;
@@ -52,18 +72,19 @@
   --color-accent-900: #134e4a;
   --color-accent-950: #042f2e;
 
-  /* Minimal, readable status colors without a heavy green accent */
-
-  /* Status colors */
-  --color-verified-50: #ecfdf3;
-  --color-verified-500: #16a34a;
-  --color-verified-600: #15803d;
+  /* Semantic status colors */
+  --color-verified-50: #ecfdf5;
+  --color-verified-500: #10b981;
+  --color-verified-600: #059669;
   --color-warning-50: #fffbeb;
   --color-warning-500: #f59e0b;
   --color-warning-600: #d97706;
   --color-danger-50: #fef2f2;
   --color-danger-500: #ef4444;
   --color-danger-600: #dc2626;
+
+  /* Signal token for score bars */
+  --color-signal-500: #06b6d4;
 
   /* Fonts */
   --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
@@ -153,30 +174,55 @@ body {
 .shadow-indigo-lg { box-shadow: 0 8px 24px rgba(79, 70, 229, 0.25); }
 
 /* ---------------------------------------------------------------------------
-   Form field — .tl-input
+   Form field — .tl-input & .teerop-input
    --------------------------------------------------------------------------- */
-.tl-input {
+.tl-input,
+.teerop-input {
   width: 100%;
-  border-radius: 0.9rem;
+  border-radius: 0.875rem;
   border: 1.5px solid var(--color-mist);
   background: #fff;
-  padding: 0.72rem 0.9rem 0.72rem 2.6rem;
+  padding: 0.7rem 0.9rem 0.7rem 2.6rem;
   font-size: 0.875rem;
   color: var(--color-ink);
   outline: none;
   transition: border-color 0.15s ease, box-shadow 0.2s ease, background-color 0.15s ease;
 }
-.tl-input:focus {
+.tl-input:focus,
+.teerop-input:focus {
   border-color: var(--color-indigo-500);
   box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12);
   background: #fff;
 }
-.tl-input::placeholder { color: #94a3b8; }
-.tl-input[aria-invalid="true"] {
+.tl-input::placeholder,
+.teerop-input::placeholder { color: #94a3b8; }
+.tl-input[aria-invalid="true"],
+.teerop-input[aria-invalid="true"] {
   border-color: var(--color-danger-500);
 }
-.tl-input[aria-invalid="true"]:focus {
+.tl-input[aria-invalid="true"]:focus,
+.teerop-input[aria-invalid="true"]:focus {
   box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.12);
+}
+
+.teerop-card {
+  background-color: #ffffff;
+  border-radius: 1rem;
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05), 0 1px 2px rgba(15, 23, 42, 0.03);
+}
+
+.teerop-card-interactive {
+  background-color: #ffffff;
+  border-radius: 1rem;
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+  transition: all 0.2s ease;
+}
+.teerop-card-interactive:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08);
+  transform: translateY(-1px);
 }
 
 .tl-label {

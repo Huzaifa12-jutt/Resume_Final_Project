@@ -4,13 +4,7 @@ import toast from 'react-hot-toast';
 import RoleShell from '../../components/layout/RoleShell';
 import { atsService } from '../../services/atsService';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
-
-const statusBadge = (status) => {
-  const s = (status || 'active').toLowerCase();
-  if (s === 'active') return 'bg-emerald-50 text-emerald-700 border-emerald-200';
-  if (s === 'closed') return 'bg-rose-50 text-rose-700 border-rose-200';
-  return 'bg-slate-50 text-slate-700 border-slate-200';
-};
+import StatusBadge from '../../components/common/StatusBadge';
 
 export default function CandidateSavedJobsPage() {
   useDocumentTitle('Saved Jobs');
@@ -102,9 +96,7 @@ export default function CandidateSavedJobsPage() {
                             <DollarSign size={12} /> {salary}
                           </span>
                         )}
-                        <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[10px] font-semibold ${statusBadge(job.status)}`}>
-                          {job.status || 'Active'}
-                        </span>
+                        <StatusBadge status={job.status || 'Active'} />
                       </div>
                     </div>
                     <button

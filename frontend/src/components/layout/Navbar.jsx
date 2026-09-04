@@ -19,10 +19,7 @@ const Navbar = () => {
             <Sparkles className="h-5 w-5" />
           </div>
           <div>
-            <span className="text-lg font-bold text-slate-900 tracking-tight">TalentLense</span>
-            <span className="ml-1.5 text-xs font-semibold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-600 border border-indigo-100">
-              ATS Pro
-            </span>
+            <span className="text-lg font-bold text-slate-900 tracking-tight">TEEROP</span>
           </div>
         </Link>
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { CheckCircle2 } from 'lucide-react';
-import LensMark from '../components/common/LensMark';
+import TeeropLogo from '../components/common/TeeropLogo';
 
 const AuthLayout = ({
   children,
@@ -16,11 +16,8 @@ const AuthLayout = ({
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-gradient-to-br from-blue-600 to-indigo-700 text-white flex-col justify-between p-12">
         <div className="absolute inset-0 bg-gradient-to-t from-indigo-900/70 via-blue-800/40 to-blue-600/30" />
 
-        <Link to="/" className="relative z-10 flex items-center gap-2.5">
-          <div className="h-9 w-9 rounded-xl bg-white/15 backdrop-blur-md border border-white/20 flex items-center justify-center">
-            <LensMark size={16} tone="light" />
-          </div>
-          <span className="text-lg font-bold tracking-tight">TEEROP</span>
+        <Link to="/" className="relative z-10 flex items-center">
+          <TeeropLogo size="md" tone="light" />
         </Link>
 
         {/* Floating proof cards */}
@@ -63,11 +60,8 @@ const AuthLayout = ({
       <div className="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-16 xl:px-24 bg-white">
         <div className="mx-auto w-full max-w-sm lg:w-96">
           <div className="mb-8">
-            <Link to="/" className="lg:hidden flex items-center gap-2 mb-6">
-              <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white flex items-center justify-center">
-                <LensMark size={16} tone="light" />
-              </div>
-              <span className="text-xl font-bold text-slate-900">TEEROP</span>
+            <Link to="/" className="lg:hidden flex items-center mb-6">
+              <TeeropLogo size="md" />
             </Link>
             <h2 className="text-2xl font-bold text-slate-900 tracking-tight">{title}</h2>
             {subtitle && <p className="mt-2 text-sm text-slate-500">{subtitle}</p>}

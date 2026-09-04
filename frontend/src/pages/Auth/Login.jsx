@@ -48,16 +48,16 @@ const Login = () => {
               type="email"
               placeholder="you@company.com"
               {...register('email', { required: 'Email address is required' })}
-              className="w-full rounded-xl border border-slate-200 pl-10 pr-4 py-3 text-sm text-slate-900 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/15 transition-all"
+              className="w-full rounded-xl border border-slate-200 pl-10 pr-4 py-3 text-sm text-slate-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/15 transition-all"
             />
           </div>
-          {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email.message}</p>}
+          {errors.email && <p className="mt-1 text-xs text-rose-500">{errors.email.message}</p>}
         </div>
 
         <div>
           <div className="flex items-center justify-between mb-1.5">
             <label className="block text-sm font-medium text-slate-900">Password</label>
-            <Link to="/forgot-password" className="text-sm font-medium text-teal-600 hover:underline">
+            <Link to="/forgot-password" className="text-sm font-medium text-indigo-600 hover:text-indigo-700 hover:underline">
               Forgot Password?
             </Link>
           </div>
@@ -67,7 +67,7 @@ const Login = () => {
               type={showPassword ? 'text' : 'password'}
               placeholder="••••••••"
               {...register('password', { required: 'Password is required' })}
-              className="w-full rounded-xl border border-slate-200 pl-10 pr-10 py-3 text-sm text-slate-900 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/15 transition-all"
+              className="w-full rounded-xl border border-slate-200 pl-10 pr-10 py-3 text-sm text-slate-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/15 transition-all"
             />
             <button
               type="button"
@@ -78,7 +78,7 @@ const Login = () => {
               {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
             </button>
           </div>
-          {errors.password && <p className="mt-1 text-xs text-red-500">{errors.password.message}</p>}
+          {errors.password && <p className="mt-1 text-xs text-rose-500">{errors.password.message}</p>}
         </div>
 
         <label className="flex items-center gap-2 text-sm text-slate-600 cursor-pointer">
@@ -90,14 +90,14 @@ const Login = () => {
           Remember me
         </label>
 
-        <Button type="submit" size="lg" className="w-full mt-1 bg-gradient-to-r from-teal-600 to-indigo-600 shadow-lg shadow-teal-600/30 hover:shadow-xl hover:shadow-teal-600/40" isLoading={isSubmitting}>
+        <Button type="submit" variant="primary" size="lg" className="w-full mt-1" isLoading={isSubmitting}>
           Sign In <ArrowRight size={16} className="ml-1.5" />
         </Button>
       </form>
 
       <div className="mt-8 text-center text-sm text-slate-500">
         Don't have an account?{' '}
-        <Link to="/register" className="text-teal-600 font-semibold hover:underline">
+        <Link to="/register" className="text-indigo-600 font-semibold hover:text-indigo-700 hover:underline">
           Create Account
         </Link>
       </div>

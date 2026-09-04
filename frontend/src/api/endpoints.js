@@ -5,6 +5,7 @@ export const endpoints = {
   candidates: (jobId) => `/jobs/${jobId}/candidates`,
   sampleCandidates: (jobId) => `/jobs/${jobId}/candidates/sample`,
   candidate: (jobId, candidateId) => `/jobs/${jobId}/candidates/${candidateId}`,
+  candidateResumeUrl: (jobId, candidateId) => `/jobs/${jobId}/candidates/${candidateId}/resume-url`,
   rank: (jobId) => `/jobs/${jobId}/rank`,
   export: (jobId) => `/jobs/${jobId}/export`,
   chat: (jobId) => `/jobs/${jobId}/chat`,

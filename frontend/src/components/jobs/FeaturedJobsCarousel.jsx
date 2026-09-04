@@ -102,7 +102,7 @@ export default function FeaturedJobsCarousel() {
 
           <p className="mx-auto mt-4 max-w-2xl text-sm leading-6 text-slate-500 md:text-base">
             Explore the latest opportunities from companies hiring through
-            TalentLense.
+            TEEROP.
           </p>
         </div>
 

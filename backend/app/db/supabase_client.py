@@ -35,18 +35,25 @@ def get_supabase() -> Client:
 # ---------------------------------------------------------------------------
 # Storage helpers
 # ---------------------------------------------------------------------------
-def upload_resume_file(job_id: str, candidate_id: str, file_bytes: bytes) -> str:
+def upload_resume_file(
+    job_id: str,
+    candidate_id: str,
+    file_bytes: bytes,
+    file_extension: str = ".pdf",
+    content_type: str = "application/pdf"
+) -> str:
     """
-    Uploads a resume PDF to the private `resumes` bucket at
-    resumes/{job_id}/{candidate_id}.pdf and returns that storage path
+    Uploads a resume file (PDF, PNG, JPG, JPEG) to the private `resumes` bucket at
+    resumes/{job_id}/{candidate_id}{ext} and returns that storage path
     (NOT a public URL — the bucket is private by design).
     """
     client = get_supabase()
-    path = f"{job_id}/{candidate_id}.pdf"
+    ext = file_extension if file_extension.startswith(".") else f".{file_extension}"
+    path = f"{job_id}/{candidate_id}{ext}"
     client.storage.from_(settings.SUPABASE_RESUME_BUCKET).upload(
         path,
         file_bytes,
-        file_options={"content-type": "application/pdf", "upsert": "true"},
+        file_options={"content-type": content_type, "upsert": "true"},
     )
     return path
 

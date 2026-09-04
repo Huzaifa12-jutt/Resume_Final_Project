@@ -672,7 +672,7 @@ export default function PublicJobDetailPage() {
                 </h2>
 
                 <p className="mt-3 text-sm leading-6 text-slate-600">
-                  Apply through TalentLense and let the recruiter review
+                  Apply through TEEROP and let the recruiter review
                   your candidate profile and resume.
                 </p>
 
@@ -810,7 +810,7 @@ export default function PublicJobDetailPage() {
         <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-7 text-xs text-slate-400 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
 
           <span>
-            © {new Date().getFullYear()} TalentLense. All rights reserved.
+            © {new Date().getFullYear()} TEEROP. All rights reserved.
           </span>
 
           <span>
@@ -841,12 +841,12 @@ function PublicHeader() {
           className="flex items-center gap-3"
         >
 
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-teal-700 text-lg font-bold text-white shadow-sm">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-600 text-lg font-bold text-white shadow-sm">
             T
           </div>
 
           <span className="text-lg font-bold tracking-tight text-slate-950">
-            TalentLense
+            TEEROP
           </span>
 
         </Link>

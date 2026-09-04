@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink, Link, useNavigate } from 'react-router-dom';
 import {
-  FiBriefcase,
   FiGrid,
   FiSearch,
   FiFileText,
@@ -15,6 +14,7 @@ import useAuth from '../../hooks/useAuth';
 import useNotifications from '../../hooks/useNotifications';
 import useMessagingUnread from '../../hooks/useMessagingUnread';
 import NotificationDrawer from './NotificationDrawer';
+import TeeropLogo from '../common/TeeropLogo';
 
 const CandidateNavbar = () => {
   const { user, logout } = useAuth();
@@ -37,16 +37,8 @@ const CandidateNavbar = () => {
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Brand Logo */}
-        <Link to="/candidate" className="flex items-center space-x-3">
-          <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-indigo-600 to-blue-600 text-white flex items-center justify-center font-bold shadow-md shadow-indigo-500/20">
-            <FiBriefcase className="h-5 w-5" />
-          </div>
-          <div>
-            <span className="font-extrabold text-gray-900 text-lg tracking-tight">TEEROP</span>
-            <span className="ml-2 text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">
-              Candidate Portal
-            </span>
-          </div>
+        <Link to="/candidate" className="flex items-center">
+          <TeeropLogo size="md" badge="Candidate Portal" />
         </Link>
 
         {/* Nav Links */}

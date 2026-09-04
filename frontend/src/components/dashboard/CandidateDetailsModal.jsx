@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Modal from '../common/Modal';
 import Badge from '../common/Badge';
 import Card from '../common/Card';
@@ -13,9 +13,17 @@ import {
   FiStar,
   FiCheck,
   FiAlertCircle,
+  FiFileText,
+  FiExternalLink,
 } from 'react-icons/fi';
+import { candidatesService } from '../../services/candidatesService';
 
 const CandidateDetailsModal = ({ isOpen, onClose, candidate }) => {
+  const [resumeUrl, setResumeUrl] = useState(null);
+  const [isLoadingResume, setIsLoadingResume] = useState(false);
+  const [showImagePreview, setShowImagePreview] = useState(false);
+  const [resumeError, setResumeError] = useState(null);
+
   if (!candidate) return null;
 
   const score = candidate.score !== undefined && candidate.score !== null ? Math.round(candidate.score) : null;
@@ -34,6 +42,44 @@ const CandidateDetailsModal = ({ isOpen, onClose, candidate }) => {
       tierLabel = 'Weak Match (Red)';
     }
   }
+
+  const handleViewResume = async () => {
+    const cId = candidate.id || candidate._id || candidate.candidate_id;
+    const jId = candidate.job_id;
+    if (!jId || !cId) {
+      if (candidate.resume_url) {
+        window.open(candidate.resume_url, '_blank');
+      }
+      return;
+    }
+
+    setIsLoadingResume(true);
+    setResumeError(null);
+    try {
+      const data = await candidatesService.getResumeUrl(jId, cId);
+      if (data?.url) {
+        setResumeUrl(data.url);
+        const isImage = Boolean(
+          (data.filename && data.filename.match(/\.(png|jpe?g)$/i)) ||
+          (data.resume_file_path && data.resume_file_path.match(/\.(png|jpe?g)$/i))
+        );
+        if (isImage) {
+          setShowImagePreview((prev) => !prev);
+        } else {
+          window.open(data.url, '_blank');
+        }
+      }
+    } catch (err) {
+      setResumeError('Could not load resume URL.');
+    } finally {
+      setIsLoadingResume(false);
+    }
+  };
+
+  const isImageFile = Boolean(
+    (candidate.filename && candidate.filename.match(/\.(png|jpe?g)$/i)) ||
+    (candidate.resume_file_path && candidate.resume_file_path.match(/\.(png|jpe?g)$/i))
+  );
 
   const skills = Array.isArray(candidate.skills)
     ? candidate.skills
@@ -76,6 +122,28 @@ const CandidateDetailsModal = ({ isOpen, onClose, candidate }) => {
                 </div>
               )}
             </div>
+
+            <div className="mt-3 flex items-center gap-2">
+              <button
+                type="button"
+                onClick={handleViewResume}
+                disabled={isLoadingResume}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-50 border border-indigo-200 text-indigo-700 hover:bg-indigo-100 transition shadow-2xs"
+              >
+                <FiFileText className="h-3.5 w-3.5" />
+                <span>
+                  {isLoadingResume
+                    ? 'Loading Resume...'
+                    : isImageFile
+                    ? (showImagePreview ? 'Hide Resume Image' : 'View Resume Image')
+                    : 'View Original Resume'}
+                </span>
+                <FiExternalLink className="h-3 w-3 opacity-70" />
+              </button>
+              {resumeError && (
+                <span className="text-xs text-rose-500 font-medium">{resumeError}</span>
+              )}
+            </div>
           </div>
 
           {score !== null && (
@@ -85,6 +153,26 @@ const CandidateDetailsModal = ({ isOpen, onClose, candidate }) => {
             </div>
           )}
         </div>
+
+        {/* Inline Image Resume Preview if toggled */}
+        {showImagePreview && resumeUrl && (
+          <Card className="p-3 bg-slate-50 border border-slate-200">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-semibold text-slate-700">Resume Image Preview</span>
+              <a
+                href={resumeUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="text-xs font-medium text-indigo-600 hover:underline inline-flex items-center gap-1"
+              >
+                Open full size <FiExternalLink className="h-3 w-3" />
+              </a>
+            </div>
+            <div className="max-h-96 overflow-y-auto rounded-lg border border-slate-200 bg-white flex justify-center p-2">
+              <img src={resumeUrl} alt="Candidate Resume" className="max-h-96 object-contain rounded" />
+            </div>
+          </Card>
+        )}
 
         {/* Score Breakdown / Summary */}
         {candidate.summary && (

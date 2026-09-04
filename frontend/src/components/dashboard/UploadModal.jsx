@@ -17,9 +17,11 @@ const UploadModal = ({ isOpen, onClose, onUpload }) => {
     const validFiles = [];
     const newFileNames = new Set(selectedFiles.map((f) => f.name));
 
+    const allowedExtensions = ['.pdf', '.png', '.jpg', '.jpeg'];
     Array.from(files).forEach((file) => {
-      if (file.type !== 'application/pdf' && !file.name.endsWith('.pdf')) {
-        toast.error(`${file.name} is not a PDF file.`);
+      const ext = '.' + file.name.split('.').pop().toLowerCase();
+      if (!allowedExtensions.includes(ext)) {
+        toast.error(`${file.name} is not a supported file. Only PDF, PNG, JPG, and JPEG are allowed.`);
         return;
       }
       if (file.size > MAX_FILE_SIZE) {
@@ -110,17 +112,17 @@ const UploadModal = ({ isOpen, onClose, onUpload }) => {
             ref={fileInputRef}
             onChange={handleFileSelect}
             multiple
-            accept=".pdf,application/pdf"
+            accept=".pdf,.png,.jpg,.jpeg,application/pdf,image/png,image/jpeg"
             className="hidden"
           />
           <div className="flex justify-center mb-3 text-indigo-600">
             <FiUploadCloud className="h-12 w-12" />
           </div>
           <p className="text-sm font-semibold text-gray-800">
-            Click to browse or drag & drop candidate PDFs here
+            Click to browse or drag & drop candidate resumes here
           </p>
           <p className="text-xs text-indigo-600 mt-1">Upload multiple resumes and evaluate them instantly against the active job description.</p>
-          <p className="text-xs text-gray-400 mt-1">Supports multiple PDF files up to 10MB each</p>
+          <p className="text-xs text-gray-400 mt-1">Supports PDF, PNG, JPG, and JPEG files up to 10MB each</p>
         </div>
 
         {/* Selected Files List */}

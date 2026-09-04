@@ -40,7 +40,7 @@ const Footer = () => {
           <div>
             <h4 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">Connect</h4>
             <div className="flex gap-3">
-              <a href="mailto:hello@talentlense.com" className="p-2 rounded-lg bg-slate-800 hover:text-white" aria-label="Contact">
+              <a href="mailto:hello@teerop.com" className="p-2 rounded-lg bg-slate-800 hover:text-white" aria-label="Contact">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
               </a>
             </div>
@@ -48,7 +48,7 @@ const Footer = () => {
         </div>
 
         <div className="pt-8 border-t border-slate-800 text-center text-xs text-slate-500">
-          © {new Date().getFullYear()} TalentLense. All rights reserved.
+          © {new Date().getFullYear()} TEEROP. All rights reserved.
         </div>
       </div>
     </footer>

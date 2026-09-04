@@ -16,7 +16,10 @@ Approach (kept deliberately simple + dependency-light, per the brief):
 """
 
 import re
+import io
+from typing import Optional
 import PyPDF2
+from app.services.ocr_service import extract_text_from_image
 
 
 # ---------------------------------------------------------------------------
@@ -62,6 +65,11 @@ PHONE_RE = re.compile(r"\+?\d[\d\-.\s()]{7,}\d")
 
 def extract_text_from_pdf(file_bytes) -> str:
     """Extract raw text from a PDF given its bytes (or a file-like object)."""
+    if isinstance(file_bytes, bytes):
+        file_bytes = io.BytesIO(file_bytes)
+    elif hasattr(file_bytes, "seek"):
+        file_bytes.seek(0)
+
     reader = PyPDF2.PdfReader(file_bytes)
     text_parts = []
     for page in reader.pages:
@@ -125,10 +133,8 @@ def _extract_section(text: str, header_variants: list) -> str:
     return "\n".join(lines[start_idx:end_idx]).strip()
 
 
-def parse_resume(file_bytes, filename: str = "resume.pdf") -> dict:
-    """Main entry point: PDF bytes -> structured candidate dict."""
-    raw_text = extract_text_from_pdf(file_bytes)
-
+def parse_resume_text(raw_text: str, filename: str = "resume.pdf") -> dict:
+    """Parses already extracted raw resume text into structured candidate dictionary."""
     return {
         "filename": filename,
         "name": _extract_name(raw_text),
@@ -141,3 +147,28 @@ def parse_resume(file_bytes, filename: str = "resume.pdf") -> dict:
         "projects": _extract_section(raw_text, SECTION_HEADERS["projects"]),
         "raw_text": raw_text,
     }
+
+
+def parse_resume(file_bytes, filename: str = "resume.pdf", content_type: Optional[str] = None) -> dict:
+    """Main entry point: PDF or Image bytes -> structured candidate dict."""
+    lower_fn = filename.lower()
+    is_image = lower_fn.endswith((".png", ".jpg", ".jpeg")) or (
+        content_type and content_type.startswith("image/")
+    )
+
+    # If filename doesn't indicate image, check magic bytes if possible
+    if not is_image:
+        if isinstance(file_bytes, bytes):
+            if file_bytes.startswith(b"\x89PNG") or file_bytes.startswith(b"\xff\xd8\xff"):
+                is_image = True
+        elif hasattr(file_bytes, "getvalue"):
+            b = file_bytes.getvalue()
+            if b.startswith(b"\x89PNG") or b.startswith(b"\xff\xd8\xff"):
+                is_image = True
+
+    if is_image:
+        raw_text = extract_text_from_image(file_bytes)
+    else:
+        raw_text = extract_text_from_pdf(file_bytes)
+
+    return parse_resume_text(raw_text, filename)

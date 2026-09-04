@@ -50,8 +50,8 @@ const Register = () => {
   return (
     <AuthLayout
       title="Create Account"
-      subtitle="Join thousands of recruiters and job seekers using TalentLense."
-      sideTitle="Join TalentLense"
+      subtitle="Join thousands of recruiters and job seekers using TEEROP."
+      sideTitle="Join TEEROP"
       sideText="Register as a recruiter to manage hiring, or a candidate to apply for roles — every account keeps one role for good."
     >
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
